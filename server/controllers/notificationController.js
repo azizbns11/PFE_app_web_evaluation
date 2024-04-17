@@ -3,7 +3,7 @@ const Notification = require("../models/notification");
 const notificationController = {
   getNotificationsByUserId: async (req, res) => {
     try {
-      const userId = req.params.id; // Use req.params.id instead of req.params.userId
+      const userId = req.params.id; 
       console.log("Fetching notifications for user:", userId);
       const notifications = await Notification.find({ userId });
       console.log("Fetched notifications:", notifications);

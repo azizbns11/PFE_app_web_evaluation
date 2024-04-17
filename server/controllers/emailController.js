@@ -1,8 +1,8 @@
 const nodemailer = require('nodemailer');
 
-// Function to send email
+
 const sendEmail = async (email) => {
-  // Create a Nodemailer transporter
+  
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -11,7 +11,7 @@ const sendEmail = async (email) => {
     }
   });
 
-  // Email data
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
@@ -19,7 +19,7 @@ const sendEmail = async (email) => {
     text: `link rest password is `
   };
 
-  // Send email
+
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent:', info.response);

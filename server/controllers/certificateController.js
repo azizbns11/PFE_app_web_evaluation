@@ -35,22 +35,22 @@ const certificateController = {
             CertificateNumber,
             CertificateName,
           } = req.body;
-          const certificateFile = req.file ? req.file.filename : undefined; // Get uploaded file name
+          const certificateFile = req.file ? req.file.filename : undefined;
           const supplier = await User.findOne({ groupName: SupplierName });
           if (!supplier) {
             return res.status(404).json({ message: "Supplier not found" });
           }
           const userRole = req.userRole;
-           // Assuming user role is stored in req.user.role
+         
   
           let notificationMessage = "";
   
-          // Check if the logged-in user is a supplier
+        
           if (userRole === "supplier") {
-            // Supplier is adding the certificate
+          
             notificationMessage = `You have a new certificate: ${CertificateName}`;
           } else {
-            // Admin or employee is adding the certificate
+          
             notificationMessage = `A new certificate has been added for supplier ${SupplierName}`;
           }
   
@@ -66,7 +66,7 @@ const certificateController = {
   
           const savedCertificate = await newCertificate.save();
   
-          // Create notification for the supplier
+       
           const supplierNotification = new Notification({
             userId: supplier._id,
             message: notificationMessage,
@@ -74,7 +74,7 @@ const certificateController = {
           });
           await supplierNotification.save();
   
-          // Send response
+        
           res.status(201).json(savedCertificate);
         } catch (error) {
           console.error("Error adding certificate:", error);
@@ -89,16 +89,16 @@ const certificateController = {
   
   getAllCertificates: async (req, res) => {
     try {
-      const userId = req.userId; // Assuming you have the user ID extracted from the token
-      const userRole = req.userRole; // Assuming you have the user's role extracted from the token
+      const userId = req.userId; 
+      const userRole = req.userRole;
 
       let certificates = [];
 
-      // If the user is a supplier, retrieve only the certificates associated with their supplier ID
+     
       if (userRole === "supplier") {
         certificates = await Certificate.find({ supplierId: userId });
       } else {
-        // For admin or employee, retrieve all certificates
+       
         certificates = await Certificate.find();
       }
 
@@ -128,9 +128,9 @@ const certificateController = {
   getCertificateFile: async (req, res) => {
     try {
       const filename = req.params.filename;
-      console.log("Requested filename:", filename); // Log the requested filename
+      console.log("Requested filename:", filename);
       const filePath = path.join(__dirname, "../file/", filename);
-      console.log("File path:", filePath); // Log the file path
+      console.log("File path:", filePath);
       res.sendFile(filePath);
     } catch (error) {
       console.error(error.message);
@@ -140,9 +140,9 @@ const certificateController = {
 
   updateCertificateById: async (req, res) => {
     try {
-      // Use multer middleware to handle file upload
+      
       upload.single("certificateFile")(req, res, async function (err) {
-        // Handle Multer errors
+     
         if (err instanceof multer.MulterError) {
           console.error(err);
           return res
@@ -163,35 +163,35 @@ const certificateController = {
         } = req.body;
         const certificateFile = req.file ? req.file.filename : undefined;
 
-        // Construct updatedCertificateData object
+     
         let updatedCertificateData = {
           SupplierName,
           ExpireDate,
           RecertificateDate,
           CertificateNumber,
           CertificateName,
-          CertificateFile: certificateFile, // Update file path
+          CertificateFile: certificateFile, 
         };
 
-        // Find and update the certificate
+        
         const updatedCertificate = await Certificate.findByIdAndUpdate(
           req.params.id,
           updatedCertificateData,
-          { new: true } // Return the updated document
+          { new: true }
         );
 
         console.log("Certificate updated:", updatedCertificate);
 
-        // Handle the case where the certificate is not found
+     
         if (!updatedCertificate) {
           return res.status(404).json({ message: "Certificate not found" });
         }
 
-        // Calculate notification date (90 days before expiration)
+     
         const notificationDate = new Date(updatedCertificateData.ExpireDate);
         notificationDate.setDate(notificationDate.getDate() - 90);
 
-        // Create a notification for the supplier
+  
         const notification = new Notification({
           userId: updatedCertificate.supplierId,
           message:
@@ -200,7 +200,7 @@ const certificateController = {
         });
         await notification.save();
 
-        // Send response
+      
         res.json({
           message: "Certificate updated successfully",
           certificate: updatedCertificate,

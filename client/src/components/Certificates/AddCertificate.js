@@ -21,7 +21,7 @@ import ReactDatetime from "react-datetime";
 
 const AddCertificate = ({ isOpen, toggle }) => {
   const [formData, setFormData] = useState({
-    SupplierName: "", // Initialize SupplierName as an empty string
+    SupplierName: "", 
     ExpireDate: "",
     RecertificateDate: "",
     CertificateNumber: "",
@@ -72,10 +72,10 @@ const AddCertificate = ({ isOpen, toggle }) => {
           }
         );
         const currentUserData = response.data;
-        console.log("Current User:", currentUserData); // Log the current user
+        console.log("Current User:", currentUserData); 
         setCurrentUser(currentUserData);
         if (currentUserData.role === "supplier") {
-          // If the current user is a supplier, set their name as the default value for SupplierName
+        
           setFormData((prevFormData) => ({
             ...prevFormData,
             SupplierName: currentUserData.groupName,
@@ -176,7 +176,7 @@ const AddCertificate = ({ isOpen, toggle }) => {
                           SupplierName: e.target.value,
                         })
                       }
-                      disabled // Make the input non-editable
+                      disabled
                       className="form-control"
                     />
                   ) : (

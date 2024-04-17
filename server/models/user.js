@@ -55,8 +55,8 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: Number,
-    unique: true,
-    index: true,
+    index: { unique: false },
+    sparse: true,
   },
   fax: { type: Number },
 

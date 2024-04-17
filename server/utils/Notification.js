@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 
-const sendNotification = async (supplierEmail, subject, message) => {
+const sendNotification = async (recipientEmail, subject, message) => {
   try {
-    // Create nodemailer transporter
+   
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -11,18 +11,16 @@ const sendNotification = async (supplierEmail, subject, message) => {
       },
     });
 
-    // Define email options
-    const options = {
+
+    const mailOptions = {
       from: process.env.FROM_EMAIL,
-      to: supplierEmail,
+      to: recipientEmail,
       subject: subject,
       text: message,
     };
 
-    console.log("Sending notification email ...");
 
-    // Send email
-    const info = await transporter.sendMail(options);
+    const info = await transporter.sendMail(mailOptions);
     console.log("Notification email sent:", info.response);
   } catch (error) {
     console.error("Error sending notification email:", error);

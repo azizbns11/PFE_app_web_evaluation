@@ -15,7 +15,7 @@ const employeeController = {
     try {
       console.log("Updating employee by ID:", req.params.id);
       
-      // Extract the data from the request body
+      
       const { firstName, lastName, position } = req.body;
   
       let updatedEmployeeData = {
@@ -24,19 +24,19 @@ const employeeController = {
         position: position
       };
       
-      // Find and update the employee
+     
       const updatedEmployee = await User.findByIdAndUpdate(
         req.params.id,
         updatedEmployeeData,
-        { new: true } // Return the updated document
+        { new: true }
       );
   
-      // Handle the case where the employee is not found
+   
       if (!updatedEmployee) {
         return res.status(404).json({ message: "Employee not found" });
       }
   
-      // Return success response with the updated employee
+     
       res.json({ message: 'Employee updated successfully', employee: updatedEmployee });
     } catch (error) {
       console.error('Error updating employee:', error);
@@ -47,7 +47,7 @@ const employeeController = {
     try {
       const employeeId = req.params.id;
   
-      // Delete the employee
+   
       const deletedEmployee = await User.findByIdAndDelete(employeeId);
   
       if (!deletedEmployee) {

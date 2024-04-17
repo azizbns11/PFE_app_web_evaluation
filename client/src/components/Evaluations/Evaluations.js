@@ -60,7 +60,7 @@ const Evaluations = () => {
           }
         );
 
-        // Filter evaluations based on the entered year or the current year
+       
         let filteredEvaluations = response.data;
         if (searchYear !== "") {
           const searchedYear = parseInt(searchYear);
@@ -76,10 +76,10 @@ const Evaluations = () => {
           });
         }
 
-        // Log the filtered evaluations to debug
+       
         console.log("Filtered Evaluations:", filteredEvaluations);
 
-        // Filter evaluations based on user role
+      
         if (userRole === "supplier" && userId) {
           filteredEvaluations = filteredEvaluations.filter(
             (evaluation) => evaluation.supplierId === userId
@@ -183,22 +183,22 @@ const Evaluations = () => {
     let totalScore = 0;
     let totalMonths = 0;
 
-    // Filter evaluations for the specified supplier
+   
     const filteredSupplierEvaluations = evaluations.filter((evaluation) => {
       return evaluation.SupplierName === supplier;
     });
 
-    // Calculate the total score by summing up the scores of each evaluation
+  
     filteredSupplierEvaluations.forEach((evaluation) => {
-      totalScore += evaluation.Score || 0; // Adding the score, or 0 if undefined
-      totalMonths++; // Counting the number of evaluations
+      totalScore += evaluation.Score || 0; 
+      totalMonths++; 
     });
 
-    // Calculate the average score
+
     const averageScore = totalMonths > 0 ? totalScore / totalMonths : 0;
 
-    // Return the formatted total score
-    return averageScore.toFixed(2); // Using average score instead of total score
+  
+    return averageScore.toFixed(2); 
   };
 
   const evaluationScores = {};

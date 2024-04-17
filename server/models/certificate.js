@@ -8,8 +8,8 @@ const certificateSchema = new mongoose.Schema({
   ExpireDate: { type: Date },
   RecertificateDate: { type: Date },
   CertificateFile: { type: String },
-  notificationStatus: { type: String, default: 'pending' }, // Pending, Sent
-  lastNotifiedDate: { type: Date }, // Date when the last notification was sent
+  notificationStatus: { type: String, default: 'pending' },
+  lastNotifiedDate: { type: Date }, 
 
 });
 

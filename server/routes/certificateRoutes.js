@@ -18,7 +18,4 @@ router.get('/certificates/supplier/:id', certificateController.getCertificateByS
 module.exports = router;
 
 
-/*
 
-
-router.get('/names', certificateController.getAllCertifNames); // Obtenir tous les noms en premier*/

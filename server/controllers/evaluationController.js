@@ -15,28 +15,27 @@ exports.createEvaluation = async (req, res) => {
       Score
     } = req.body;
 
-    // Ensure that all required fields are provided
+
     if (!SupplierName || !evaluationDate || !QualityNote || !LogisticNote || !BillingError || !PaymentTerm || !Score) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Parse the evaluationDate string back into a Date object
+  
     const parsedEvaluationDate = new Date(evaluationDate);
 
-    // Fetch the supplierId based on the selected SupplierName
     const supplier = await User.findOne({ groupName: SupplierName });
     if (!supplier) {
       return res.status(404).json({ message: 'Supplier not found' });
     }
 
-    // Check if evaluationDate is after January 2024
+
     const january2024 = new Date('2024-01-01');
     const currentMonth = new Date();
     if (parsedEvaluationDate < january2024) {
       return res.status(400).json({ message: 'Evaluation cannot be added for months before January 2024' });
     }
 
-    // Check if there is an evaluation for the previous month
+   
     if (parsedEvaluationDate.getMonth() !== 0) { // Exclude January 2024
       const previousMonthStart = moment(parsedEvaluationDate).subtract(1, 'months').startOf('month').toDate();
       const previousMonthEnd = moment(parsedEvaluationDate).subtract(1, 'months').endOf('month').toDate();
@@ -46,17 +45,16 @@ exports.createEvaluation = async (req, res) => {
         evaluationDate: { $gte: previousMonthStart, $lte: previousMonthEnd }
       });
 
-      // If there is no evaluation for the previous month, return an error
+      
       if (!previousMonthEvaluation) {
         return res.status(400).json({ message: 'An evaluation for the previous month is required before adding a new evaluation for the current month' });
       }
     }
 
-    // Proceed with creating the evaluation for the current month
     const evaluation = new Evaluation({
       SupplierName,
       supplierId: supplier._id, 
-      evaluationDate: parsedEvaluationDate, // Use parsed date
+      evaluationDate: parsedEvaluationDate, 
       QualityNote,
       LogisticNote,
       BillingError,
@@ -65,7 +63,7 @@ exports.createEvaluation = async (req, res) => {
     });
     await evaluation.save();
 
-    // Create a notification for the supplier
+   
     const notification = new Notification({
       userId: supplier._id,
       message: 'You have a new evaluation',
@@ -73,7 +71,7 @@ exports.createEvaluation = async (req, res) => {
     });
     await notification.save();
 
-    // Trigger notification to supplier
+  
     sendNotification(supplier.email, 'New Evaluation Added', 'New Evaluation Added','evaluation');
 
     res.status(201).json(evaluation);

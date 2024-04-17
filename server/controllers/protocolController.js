@@ -1,4 +1,3 @@
-// protocolController.js
 
 const Protocol = require('../models/protocol');
 const User = require('../models/user');
@@ -46,19 +45,19 @@ const protocolController = {
   
           const savedProtocol = await newProtocol.save();
   
-          // Send notification to users who are not suppliers
+     
           const nonSupplierUsers = await User.find({ role: { $ne: 'supplier' } });
           const notificationMessages = nonSupplierUsers.map(user => ({
             userId: user._id,
             message: `New protocol by ${supplierName}`,
-            type: 'protocol', // Pass 'protocol' as the type
+            type: 'protocol',
           }));
           await Notification.insertMany(notificationMessages);
   
-          // Send email notifications
+       
           const emailPromises = nonSupplierUsers.map(user => {
             const emailMessage = `New protocol "${protocolTitle}" added by ${supplierName} and requires validation.`;
-            return sendNotification(user.email, 'New Protocol Added', emailMessage, 'protocol'); // Pass 'protocol' as the type
+            return sendNotification(user.email, 'New Protocol Added', emailMessage, 'protocol');
           });
           await Promise.all(emailPromises);
   
@@ -75,14 +74,14 @@ const protocolController = {
   },
   getAllProtocols: async (req, res) => {
     try {
-      const userId = req.userId; // Assuming you have the user ID extracted from the token
-      const userRole = req.userRole; // Assuming you have the user's role extracted from the token
+      const userId = req.userId;
+      const userRole = req.userRole; 
   
       let protocols = [];
       if (userRole === 'supplier') {
        protocols = await Protocol.find({ supplierId: userId });
       } else {
-        // For admin or employee, retrieve all certificates
+       
         protocols = await Protocol.find();
       }
       res.json(protocols);
@@ -167,12 +166,12 @@ const protocolController = {
           return res.status(404).json({ message: "Protocol not found" });
         }
 
-        // Check if the status is changed to 'validated' or 'invalid' by someone other than the supplier
+       
         if (status === 'validated' || status === 'invalid') {
-          // Find the supplier who added this protocol
+      
           const supplier = await User.findOne({ groupName: SupplierName });
 
-          // Create a notification for the supplier
+       
           let notificationMessage;
           if (status === 'validated') {
             notificationMessage = `Your protocol has been validated.`;
@@ -186,7 +185,7 @@ const protocolController = {
           });
           await notification.save();
 
-          // Send notification email to the supplier
+      
           await sendNotification(supplier.email, status === 'validated' ? 'Protocol Validated' : 'Protocol Invalidated', notificationMessage,'protocol');
         }
 
@@ -207,6 +206,21 @@ const protocolController = {
       console.error("Error fetching protocol details:", error);
       res.status(500).json({ message: "Server Error" });
     }},
+    getAllProtocolStatus: async (req, res) => {
+      try {
+        const protocols = await Protocol.find();
+        const protocolStatuses = protocols.map(protocol => protocol.status);
+        res.json(protocolStatuses);
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    }
+    
+    
+    
+    
+    
 };
 
 module.exports = protocolController;

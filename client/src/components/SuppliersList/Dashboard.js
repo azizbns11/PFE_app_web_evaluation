@@ -52,6 +52,7 @@ const SupplierDashboard = () => {
               billing: [],
               paymentTerm: [],
               score: [],
+              notes: [], 
             };
           }
           acc[key].quality.push(evaluation.QualityNote);
@@ -59,6 +60,12 @@ const SupplierDashboard = () => {
           acc[key].billing.push(evaluation.BillingError);
           acc[key].paymentTerm.push(evaluation.PaymentTerm);
           acc[key].score.push(evaluation.Score);
+          acc[key].notes.push({
+            QualityNote: evaluation.QualityNote,
+            LogisticNote: evaluation.LogisticNote,
+            BillingErrorNote: evaluation.BillingErrorNote,
+            PaymentTermNote: evaluation.PaymentTermNote,
+          }); 
           return acc;
         }, {});
 
@@ -120,12 +127,45 @@ const SupplierDashboard = () => {
           ],
         };
 
+    
         setEvaluationData(chartData);
-        // Set qualityNote state
-        setQualityNote(response.data[0].QualityNote);
-        setLogisticNote(response.data[0].LogisticNote);
-        setBillingErrorNote(response.data[0].BillingErrorNote);
-        setPaymentTermNote(response.data[0].PaymentTermNote);
+
+    
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        const currentMonthEvaluations = response.data.filter((evaluation) => {
+          const evaluationDate = new Date(evaluation.evaluationDate);
+          return (
+            evaluationDate.getMonth() === currentMonth &&
+            evaluationDate.getFullYear() === currentYear
+          );
+        });
+
+        // Set notes for the current month
+        const qualityNote =
+          currentMonthEvaluations.length > 0
+            ? currentMonthEvaluations[0].QualityNote
+            : "";
+        const logisticNote =
+          currentMonthEvaluations.length > 0
+            ? currentMonthEvaluations[0].LogisticNote
+            : "";
+        const billingErrorNote =
+          currentMonthEvaluations.length > 0
+            ? currentMonthEvaluations[0].BillingError
+            : "";
+        const paymentTermNote =
+          currentMonthEvaluations.length > 0
+            ? currentMonthEvaluations[0].PaymentTerm
+            : "";
+
+        // Set state for notes
+        setQualityNote(qualityNote);
+        setLogisticNote(logisticNote);
+        setBillingErrorNote(billingErrorNote);
+        setPaymentTermNote(paymentTermNote);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -134,6 +174,7 @@ const SupplierDashboard = () => {
 
     fetchData();
   }, []);
+
   useEffect(() => {
     fetchCertificates();
   }, []);
@@ -191,61 +232,32 @@ const SupplierDashboard = () => {
 
   return (
     <>
-      <Container className="mt--7" fluid>
+         <Container className="mt--8" fluid style={{ minHeight: "100vh",backgroundColor: "#FFFAFA" }}>
         <div className="header-body">
           <Row className="mt-8">
             <Col lg="6" xl="2" className="ml-auto">
-              <Card className="card-stats mb-4 mb-xl-0">
+              <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                      <CardTitle
-                        tag="h5"
-                        className="text-uppercase text-muted mb-0"
-                      >
+                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
                         Quality Note
                       </CardTitle>
-                      <span className="h2 font-weight-bold mb-0">
+                      <span className="h2 font-weight-bold text-dark mb-0">
                         {qualityNote}
                       </span>
                     </div>
                     <Col className="col-auto">
-                      <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                        <i className="fas fa-chart-bar" />
+                      <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                        <i
+                          className="fa-solid fa-medal"
+                          aria-hidden="true"
+                       
+                        ></i>
                       </div>
                     </Col>
                   </Row>
-                  <p className="mt-3 mb-0 text-muted text-sm">
-                    <span className="text-success mr-2">
-                      <i className="fa fa-arrow-up" />
-                    </span>{" "}
-                    <span className="text-nowrap">this month</span>
-                  </p>
-                </CardBody>
-              </Card>
-            </Col>
-            <Col lg="6" xl="2" className="ml-8">
-              <Card className="card-stats mb-4 mb-xl-0">
-                <CardBody>
-                  <Row>
-                    <div className="col">
-                      <CardTitle
-                        tag="h5"
-                        className="text-uppercase text-muted mb-0"
-                      >
-                        Payment Term Note
-                      </CardTitle>
-                      <span className="h2 font-weight-bold mb-0">
-                        {paymentTermNote}
-                      </span>
-                    </div>
-                    <Col className="col-auto">
-                      <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                        <i className="fas fa-chart-bar" />
-                      </div>
-                    </Col>
-                  </Row>
-                  <p className="mt-3 mb-0 text-muted text-sm">
+                  <p className="mt-3 mb-0 text-white text-sm">
                     <span className="text-success mr-2">
                       <i className="fa fa-arrow-up" />
                     </span>{" "}
@@ -255,27 +267,27 @@ const SupplierDashboard = () => {
               </Card>
             </Col>
             <Col lg="6" xl="2" className="ml-6">
-              <Card className="card-stats mb-4 mb-xl-0">
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                      <CardTitle
-                        tag="h5"
-                        className="text-uppercase text-muted mb-0"
-                      >
-                        Logistic Note
+                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                        Payment Term Note
                       </CardTitle>
-                      <span className="h2 font-weight-bold mb-0">
-                        {logisticNote}
+                      <span className="h2 font-weight-bold text-dark mb-0">
+                        {paymentTermNote}
                       </span>
                     </div>
                     <Col className="col-auto">
-                      <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                        <i className="fas fa-chart-bar" />
+                      <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                        <i
+                          class="fa-solid fa-credit-card"
+                          
+                        ></i>
                       </div>
                     </Col>
                   </Row>
-                  <p className="mt-3 mb-0 text-muted text-sm">
+                  <p className="mt-3 mb-0 text-white text-sm">
                     <span className="text-success mr-2">
                       <i className="fa fa-arrow-up" />
                     </span>{" "}
@@ -284,28 +296,58 @@ const SupplierDashboard = () => {
                 </CardBody>
               </Card>
             </Col>
-            <Col lg="6" xl="2" className="ml-3">
-              <Card className="card-stats mb-4 mb-xl-0">
+            <Col lg="6" xl="2" className="ml-6">
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                      <CardTitle
-                        tag="h5"
-                        className="text-uppercase text-muted mb-0"
-                      >
+                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                        Logistic Note
+                      </CardTitle>
+                      <span className="h2 font-weight-bold text-dark mb-0">
+                        {logisticNote}
+                      </span>
+                    </div>
+                    <Col className="col-auto">
+                      <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                        <i
+                          class="fa-sharp fa-solid fa-truck"
+                        
+                        ></i>
+                      </div>
+                    </Col>
+                  </Row>
+                  <p className="mt-3 mb-0 text-white text-sm">
+                    <span className="text-success mr-2">
+                      <i className="fa fa-arrow-up" />
+                    </span>{" "}
+                    <span className="text-nowrap">this month</span>
+                  </p>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg="6" xl="2" className="ml-6">
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
+                <CardBody>
+                  <Row>
+                    <div className="col">
+                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
                         Billing Error Note
                       </CardTitle>
-                      <span className="h2 font-weight-bold mb-0">
+                      <span className="h2 font-weight-bold text-dark mb-0">
                         {BillingErrorNote}
                       </span>
                     </div>
                     <Col className="col-auto">
-                      <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                        <i className="fas fa-chart-bar" />
+                      <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                        <i
+                          class="fa-sharp fa-solid fa-file-invoice-dollar"
+                         
+                        ></i>
                       </div>
                     </Col>
                   </Row>
-                  <p className="mt-3 mb-0 text-muted text-sm">
+                  <p className="mt-3 mb-0 text-white text-sm">
                     <span className="text-success mr-2">
                       <i className="fa fa-arrow-up" />
                     </span>{" "}
@@ -317,7 +359,7 @@ const SupplierDashboard = () => {
           </Row>
         </div>
 
-        <Row className="mt-9">
+        <Row className="mt-7">
           <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
             <Card className="shadow">
               <div>
@@ -377,7 +419,7 @@ const SupplierDashboard = () => {
                     <h2 className="mb-0">Certificates</h2>
                   </div>
                   <div className="col text-right">
-                    {/* Use Link component to navigate to "/admin/suppliers" */}
+                 
                     <Link to="/admin/certificates">
                       <Button color="primary" size="sm">
                         See all

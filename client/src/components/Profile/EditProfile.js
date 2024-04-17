@@ -169,7 +169,7 @@ function EditProfile() {
               navigate("/dashboard");
               break;
           }
-        }, 1000); // Hides the success message after 1 second
+        }, 1000);
       } else {
         console.error("Error updating profile:", response.data.message);
         alert("An error occurred. Please try again.");
@@ -603,7 +603,7 @@ function EditProfile() {
                                   <label htmlFor="input-country">Country</label>
                                   <Select
                                     options={countries}
-                                    value={selectedCountry} // Set the value to the selected country object
+                                    value={selectedCountry} 
                                     onChange={handleCountryChange}
                                     placeholder="Select Country"
                                   />

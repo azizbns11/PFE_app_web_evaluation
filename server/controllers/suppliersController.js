@@ -13,7 +13,7 @@ const supplierController = {
     }
   },
 
-  // Function to get supplier by id
+
   getSupplierById: async (req, res) => {
     try {
       const supplier = await User.findById(req.params.id);
@@ -31,7 +31,7 @@ const supplierController = {
   updateSupplierById: async (req, res) => {
     try {
       console.log("Updating supplier by ID:", req.params.id);
-      // Destructure fields from the request body
+  
       const {
         groupName,
         address,
@@ -46,7 +46,7 @@ const supplierController = {
         province,
       } = req.body;
 
-      // Update supplier in the database
+    
       const updatedSupplier = await User.findByIdAndUpdate(
         req.params.id,
         {
@@ -62,33 +62,33 @@ const supplierController = {
           street,
           province,
         },
-        { new: true } // Return the updated document
+        { new: true }
       );
 
-      // Log updated supplier
+     
       console.log("Supplier updated:", updatedSupplier);
 
-      // Handle case where supplier is not found
+   
       if (!updatedSupplier) {
         return res.status(404).json({ message: "Supplier not found" });
       }
 
-      // Update associated evaluations
+    
       await Evaluation.updateMany(
         { supplierId: req.params.id },
-        { $set: { SupplierName: groupName } } // Update SupplierName to match the updated groupName
+        { $set: { SupplierName: groupName } }
       );
       await Protocol.updateMany(
         { supplierId: req.params.id },
-        { $set: { supplierName: groupName } } // Update supplierName to match the updated groupName
+        { $set: { supplierName: groupName } } 
       );
       await Certificate.updateMany(
         { supplierId: req.params.id },
-        { $set: { SupplierName: groupName } } // Update supplierName to match the updated groupName
+        { $set: { SupplierName: groupName } } 
       );
       res.json(updatedSupplier);
     } catch (error) {
-      // Log and handle errors
+   
       console.error("Error updating supplier:", error);
       res.status(500).json({ message: "Server Error" });
     }
@@ -97,17 +97,17 @@ const supplierController = {
     try {
       const supplierId = req.params.id;
 
-      // Delete the supplier
+   
       const deletedSupplier = await User.findByIdAndDelete(supplierId);
 
       if (!deletedSupplier) {
         return res.status(404).json({ message: "Supplier not found" });
       }
 
-      // Delete associated certificates
+    
       await Certificate.deleteMany({ supplierId: supplierId });
 
-      // Delete associated evaluations
+     
       await Evaluation.deleteMany({ supplierId: supplierId });
 
       res.json({

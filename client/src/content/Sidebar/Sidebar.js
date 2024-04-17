@@ -92,7 +92,7 @@ const Sidebar = (props) => {
         redirectionURL = "/supplier/dashboard/";
         break;
       case "employee":
-        redirectionURL = "/employee/dashboard";
+        redirectionURL = "/admin/dashboard";
         break;
       default:
         redirectionURL = "/";
@@ -119,7 +119,7 @@ const Sidebar = (props) => {
       id="sidenav-main"
       style={{ zIndex: 1000 }}
     >
-      <Container fluid>
+      <Container fluid >
         <button
           className="navbar-toggler"
           type="button"
@@ -227,7 +227,7 @@ const Sidebar = (props) => {
                 <NavLink
                   to={
                     user.role === "employee"
-                      ? "/employee/dashboard"
+                      ? "/admin/dashboard"
                       : user.role === "supplier"
                       ? "/supplier/dashboard"
                       : "/admin/dashboard"
@@ -329,24 +329,16 @@ const Sidebar = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
-          <Nav navbar>
-            <NavItem className="d-flex justify-content">
-              <NavLink
-                to="/profile"
-                tag={Link}
-                className="nav-link"
-                style={{ marginTop: "190px" }}
-              >
-                <i
-                  className="fa fa-user-circle"
-                  aria-hidden="true"
-                  style={{ fontSize: "24px" }}
-                ></i>
-                Profile
-              </NavLink>
-            </NavItem>
-          </Nav>
+     
         </Collapse>
+        <Nav navbar className="mt-auto">
+          <NavItem>
+            <NavLink to="/profile" tag={Link} className="nav-link">
+              <i className="fa fa-user-circle" aria-hidden="true" style={{ fontSize: "24px" }}></i>
+              Profile
+            </NavLink>
+          </NavItem>
+        </Nav>
       </Container>
     </Navbar>
   );

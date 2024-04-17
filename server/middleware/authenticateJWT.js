@@ -6,7 +6,7 @@ const authenticateJWT = async (req, res, next) => {
   const token = req.headers.authorization;
 
   try {
-    // Skip authentication for the "forgotpassword" and "resetpassword" routes
+   
     if (req.path === '/forgotpassword' || req.path.startsWith('/resetpassword/')) {
       return next();
     }
@@ -16,16 +16,16 @@ const authenticateJWT = async (req, res, next) => {
       return res.status(401).json({ message: 'Authentication token missing' });
     }
 
-    // Check token format
+
     if (!token.startsWith('Bearer ')) {
       console.error('Invalid token format');
       return res.status(401).json({ message: 'Invalid token format' });
     }
 
-    // Extract token value without the 'Bearer ' prefix
+
     const tokenValue = token.split(' ')[1];
 
-    // Verify token decoding
+ 
     const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
 
     const userId = decoded.userId;
@@ -36,7 +36,7 @@ const authenticateJWT = async (req, res, next) => {
     }
 
     req.userId = userId;
-    req.userRole = currentUser.role; // Set userRole in the request object
+    req.userRole = currentUser.role;
     console.log('Token decoded successfully');
     next();
   } catch (error) {

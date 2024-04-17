@@ -255,6 +255,7 @@ const SmallSidebar = () => {
             </NavItem>
           </Nav>
         </Collapse>
+      
       </Container>
     </Navbar>
   );

@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { authenticateJWT } = require("../middleware/authenticateJWT"); // Import the authentication middleware
+const { authenticateJWT } = require("../middleware/authenticateJWT");
 const { requestPasswordReset, resetPassword } = require("../controllers/passwordResetController");
 const passwordResetController = require("../controllers/passwordResetController");
 
-// Apply authentication middleware to routes other than resetpassword route
+
 router.use((req, res, next) => {
   if (req.path !== "/resetpassword") {
     authenticateJWT(req, res, next);
@@ -13,7 +13,7 @@ router.use((req, res, next) => {
   }
 });
 
-// Route to send reset password email
+
 router.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
   try {

@@ -124,7 +124,7 @@ const Certificates = () => {
   return (
     <>
       <div>
-        {/* Page content */}
+  
         <Container className="mt--5" fluid>
           <Row>
             <Col xl="12">

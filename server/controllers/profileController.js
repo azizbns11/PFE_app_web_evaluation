@@ -1,46 +1,46 @@
-const User = require("../models/user"); // Import the User model
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const defaultImagePath = "uploads/1713021632381.png";
-// Set up multer storage
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads"); // Directory where images will be stored
+    cb(null, "./uploads"); 
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
-// Set up multer upload
-const upload = multer({ storage: storage }).single("image"); // 'image' is the name attribute of your input field
+
+const upload = multer({ storage: storage }).single("image");
 
 const profileController = {
-  // Controller method to update user profile by ID
+ 
   updateProfile: async (req, res) => {
-    // Handle image upload
+   
     upload(req, res, async (err) => {
       if (err) {
         console.error("Error uploading image:", err);
         return res.status(500).json({ message: "Error uploading image" });
       }
 
-      // Access uploaded image file path via req.file.path
+    
       const imagePath = req.file ? req.file.path :  defaultImagePath; ;
 
-      const userId = req.params.id; // Get the user ID from the request parameters
-      const updatedProfileData = req.body; // Get the updated profile data from the request body
+      const userId = req.params.id; 
+      const updatedProfileData = req.body; 
 
       try {
-        // Find the user by ID
+   
         const user = await User.findById(userId);
 
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
 
-        // Update profile fields based on user role
+   
         switch (user.role) {
           case "admin":
           case "employee":
@@ -65,10 +65,10 @@ const profileController = {
             break;
         }
 
-        // Check if new password is provided
+      
         if (updatedProfileData.newPassword) {
-          // Hash the new password before saving
-          const saltRounds = 10; // Adjust salt rounds as needed
+     
+          const saltRounds = 10; 
           const hashedPassword = await bcrypt.hash(
             updatedProfileData.newPassword,
             saltRounds
@@ -76,12 +76,12 @@ const profileController = {
           user.password = hashedPassword;
         }
 
-        // Update image path if an image was uploaded
+       
         if (imagePath) {
           user.image = imagePath;
         }
 
-        // Save the updated user data
+       
         await user.save();
 
         res.status(200).json({ message: "Profile updated successfully", user });
@@ -91,24 +91,24 @@ const profileController = {
       }
     });
   },
-  // Controller method to fetch user profile by ID
-  fetchUserProfile: async (req, res) => {
-    const userId = req.params.id; // Get the user ID from the request parameters
 
-    // Check if user ID is null or empty
+  fetchUserProfile: async (req, res) => {
+    const userId = req.params.id;
+
+ 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
 
     try {
-      // Find the user by ID
+      
       const user = await User.findById(userId);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Send the user data as response
+   
       res.status(200).json(user);
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -132,7 +132,7 @@ const profileController = {
         userName = user.groupName;
       }
   
-      res.status(200).json({ userName, image: user.image }); // Include image path
+      res.status(200).json({ userName, image: user.image });
     } catch (error) {
       console.error("Error fetching user name:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -141,10 +141,10 @@ const profileController = {
 getAllUsers: async (req, res) => {
   try {
     const users = await User.find();
-    // Modify user objects to include complete image URLs
+   
     const usersWithImageURLs = users.map(user => ({
       ...user.toJSON(),
-      image: `${req.protocol}://${req.get('host')}/${user.image}` // Constructing complete image URL
+      image: `${req.protocol}://${req.get('host')}/${user.image}` 
     }));
     res.json(usersWithImageURLs);
   } catch (error) {

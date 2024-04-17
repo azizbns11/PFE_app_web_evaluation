@@ -25,6 +25,7 @@ const { authenticateJWT } = require("./middleware/authenticateJWT");
 
 
 
+
 app.use(cors());
 app.use(express.json());
 connectDB();
@@ -33,7 +34,7 @@ const { preRegisterAdmin } = require("./controllers/authController");
 const { sendEmail } = require("./controllers/emailService");
 
 app.use("/", authRoutes);
-// Serve static files
+
 app.use("/uploads", express.static("uploads"));
 app.use("/file", express.static(path.join(__dirname, "file")));
 
@@ -49,7 +50,7 @@ app.post("/send-email", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Call the sendEmail function from the email service
+  
     await sendEmail(email, password);
     res.status(200).send("Email sent successfully!");
   } catch (error) {
@@ -62,11 +63,16 @@ app.use("/profile", profileRoutes);
 app.use("/api/evaluations", evaluationRoutes);
 app.use("/api", certificateRoutes);
 app.use("/api/notifications", notificationRoutes);
-// Set up routes for suppliers and employees
+
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api", protocolRoutes);
 app.use("/api", dashboardRoutes);
+
+
+
+
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

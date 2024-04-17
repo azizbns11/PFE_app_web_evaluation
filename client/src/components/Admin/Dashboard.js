@@ -18,31 +18,36 @@ import { Link } from "react-router-dom";
 const AdminDashboard = (props) => {
   const [topSuppliers, setTopSuppliers] = useState([]);
   const [totalSuppliers, setTotalSuppliers] = useState(0);
-  const [suppliers, setSuppliers] = useState([]); // Initialize as an empty array
+  const [suppliers, setSuppliers] = useState([]); 
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [evaluations, setEvaluations] = useState([]);
   const [certificates, setCertificates] = useState([]);
   const [filteredCertificates, setFilteredCertificates] = useState([]);
+  const [protocolStatusData, setProtocolStatusData] = useState({
+    valid: 0,
+    invalid: 0,
+    validating: 0,
+  });
   useEffect(() => {
     const fetchTopSuppliers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/api/top", {
+        const response = await axios.get("http://localhost:8000/api/top", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await response.json();
-        setTopSuppliers(data);
+        setTopSuppliers(response.data);
       } catch (error) {
         console.error("Error fetching top suppliers:", error);
       }
     };
-
+  
     fetchTopSuppliers();
   }, []);
+  
 
   useEffect(() => {
     const fetchTotalSuppliers = async () => {
@@ -118,7 +123,44 @@ const AdminDashboard = (props) => {
       setLoading(false);
     }
   };
+  useEffect(() => {
 
+    fetchProtocolStatusData();
+  }, []);
+  const fetchProtocolStatusData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:8000/api/protocols/status",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      console.log("Protocol Status Data Response:", response.data);
+  
+   
+      const statusCounts = response.data.reduce((counts, status) => {
+        counts[status] = (counts[status] || 0) + 1;
+        return counts;
+      }, {});
+  
+   
+      setProtocolStatusData({
+        validating: statusCounts['is being validated'] || 0,
+        valid: statusCounts['validated'] || 0,
+        invalid: statusCounts['invalid'] || 0,
+        
+      });
+  
+    } catch (error) {
+      console.error("Error fetching protocol status data:", error);
+    }
+  };
+  
+  
   if (window.Chart) {
     parseOptions(window.Chart, chartOptions());
   }
@@ -128,8 +170,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalSuppliers, 100 - totalSuppliers],
-        backgroundColor: ["#FF6384", "#36A2EB"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB"],
+        backgroundColor: ["#FF6384", "#48D1CC"],
+        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
@@ -140,8 +182,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalEmployees, 100 - totalEmployees],
-        backgroundColor: ["#FF6384", "#36A2EB"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB"],
+        backgroundColor: ["#FF6384", "#48D1CC"],
+        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
@@ -188,6 +230,70 @@ const AdminDashboard = (props) => {
       ],
     },
   };
+  const chartExample4 = {
+    labels: ["Valid", "Invalid", "Being Validated"],
+    datasets: [
+      {
+        label: "Protocols",
+        data: [
+          protocolStatusData.valid,
+          protocolStatusData.invalid,
+          protocolStatusData.validating,
+        ],
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+        ],
+        borderColor: [
+          "rgba(75, 192, 192, 1)",
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+        ],
+        borderWidth: 1,
+        hoverBackgroundColor: [
+          "rgba(75, 192, 192, 0.8)",
+          "rgba(255, 99, 132, 0.8)",
+          "rgba(54, 162, 235, 0.8)",
+        ],
+        hoverBorderColor: [
+          "rgba(75, 192, 192, 1)",
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+        ],
+      },
+    ],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: true,
+            color: "rgba(0, 0, 0, 0.1)",
+          },
+        }],
+        xAxes: [{
+          gridLines: {
+            display: true,
+            color: "rgba(0, 0, 0, 0.1)",
+          },
+        }],
+      },
+  
+
+      animation: {
+        animateScale: true,
+        animateRotate: true,
+      },
+    },
+  };
+  
+  
+  
   useEffect(() => {
     fetchCertificates();
   }, []);
@@ -304,18 +410,166 @@ const AdminDashboard = (props) => {
   }, []);
   return (
     <>
-      <Container className="mt--7" fluid>
-        <Row className="mt-9">
-          <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
-            {/*supp*/}
+       <Container className="mt--9" fluid style={{ backgroundColor: "#FFFAFA" }}>
+        <Row className="mt-9 ">
+          <Col className="mb-5 mb-xl-0 offset-xl-2" xl="4">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h6 className="text-uppercase text-light ls-1 mb-1">
+                    <h6 className="text-uppercase text-light ls-1 mb-0">
                       Overview
                     </h6>
-                    <h3 className="mb-0">Suppliers</h3>
+                  </div>
+                </Row>
+              </CardHeader>
+              <CardBody style={{ padding: "0.5rem" }}>
+                <Row>
+                  <Col xl="6" className="mb-0">
+                    <div
+                      className="text-center"
+                      style={{ margin: "-0.8rem 0" }}
+                    >
+                      <h5 className="mb-0">Total Suppliers</h5>
+                      <div className="chart">
+                        <Doughnut
+                          data={chartExample1}
+                          options={{
+                            ...chartOptions,
+                            cutoutPercentage: 60,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+
+                  <Col xl="6" className="mb-0">
+                    <div
+                      className="text-center"
+                      style={{ margin: "-0.8rem 0" }}
+                    >
+                      <h5 className="mb-0">Total Employees</h5>
+                      <div className="chart">
+                        <Doughnut
+                          data={chartExample3}
+                          options={{
+                            ...chartOptions,
+                            cutoutPercentage: 60,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xl="6">
+          <Card className="shadow">
+            <CardHeader className="bg-transparent">
+              <h6 className="text-uppercase text-muted ls-1 mb-1">Protocols</h6>
+            </CardHeader>
+            <CardBody>
+              <div className="chart">
+                <Bar
+                  data={chartExample4}
+                  options={chartOptions}
+                />
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
+            {/*certif*/}
+            <Card className="shadow">
+              <CardHeader className="bg-transparent">
+                <Row className="align-items-center">
+                  <div className="col">
+                    <h2 className="mb-0">Certificates</h2>
+                  </div>
+                  <div className="col text-right">
+                    <Link to="/admin/certificates">
+                      <Button color="primary" size="sm">
+                        See all
+                      </Button>
+                    </Link>
+                  </div>
+                </Row>
+              </CardHeader>
+              <div style={{ overflowY: "auto", maxHeight: "400px" }}>
+                <Table className="align-items-center table-flush" responsive>
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col">Supplier</th>
+                      <th scope="col">Certificate Name</th>
+                      <th scope="col">Expiration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredCertificates.map((certificate) => (
+                      <tr key={certificate._id}>
+                        <td>{certificate.SupplierName}</td>
+                        <td>{certificate.CertificateName}</td>
+                        <td>
+                          <Progress
+                            value={
+                              certificate.DaysUntilExpiration <= 0
+                                ? 100
+                                : certificate.DaysUntilExpiration > 90
+                                ? 30
+                                : certificate.DaysUntilExpiration <= 60
+                                ? 50
+                                : 70
+                            }
+                            color={getCertificateProgressColor(
+                              certificate.DaysUntilExpiration
+                            )}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </Card>
+          </Col>
+
+          <Col xl="3">
+            {/*top supp*/}
+            <Card className="shadow">
+              <CardHeader className="bg-transparent">
+                <Row className="align-items-center">
+                  <div className="col">
+                    <h6 className="text-uppercase text-muted ls-1 mb-1">
+                      Performance
+                    </h6>
+                    <h2 className="mb-0">Top Suppliers</h2>
+                  </div>
+                </Row>
+              </CardHeader>
+              <CardBody>
+                <div className="chart">
+                  <Bar
+                    data={chartExample2.data}
+                    options={chartExample2.options}
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="mt-3">
+          <Col className="mb-5 mb-xl-0 offset-xl-2" xl="5">
+            {/*supp*/}
+            <Card className="shadow">
+              <CardHeader className="bg-transparent">
+                <Row className="align-items-center">
+                  <div className="col">
+                    <h2 className="mb-0">Suppliers</h2>
                   </div>
                   <div className="col text-right">
                     <Link to="/admin/suppliers">
@@ -326,9 +580,12 @@ const AdminDashboard = (props) => {
                   </div>
                 </Row>
               </CardHeader>
-              <CardBody>
+              <CardBody className="p-0">
                 <div style={{ overflowY: "auto", maxHeight: "400px" }}>
-                  <Table className="align-items-center table-flush" responsive>
+                  <Table
+                    className="align-items-center table-flush mb-0"
+                    responsive
+                  >
                     <thead className="thead-light">
                       <tr>
                         <th scope="col">Logo</th>
@@ -365,241 +622,101 @@ const AdminDashboard = (props) => {
                 </div>
               </CardBody>
             </Card>
-
-            
-
-            
           </Col>
 
-          <Col xl="3">
-            {/*top supp*/}
+          <Col xl="5">
+            {/*evaluation*/}
             <Card className="shadow">
               <CardHeader className="bg-transparent">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h6 className="text-uppercase text-muted ls-1 mb-1">
-                      Performance
-                    </h6>
-                    <h2 className="mb-0">Top Suppliers</h2>
+                    <h2 className="mb-0">Evaluations</h2>
+                  </div>
+                  <div className="col text-right">
+                    <Link to="/admin/evaluations">
+                      <Button color="primary" size="sm">
+                        See all
+                      </Button>
+                    </Link>
                   </div>
                 </Row>
               </CardHeader>
-              <CardBody>
-                <div className="chart">
-                  <Bar
-                    data={chartExample2.data}
-                    options={chartExample2.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-          
-        </Row>
-
-
-        <Row className="mt-4">
-        <Col className="mb-5 mb-xl-0 offset-xl-2" xl="5">
-                {/*certif*/}
-                <Card className="shadow">
-                  <CardHeader className="bg-transparent">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h2 className="mb-0">Certificates</h2>
-                      </div>
-                      <div className="col text-right">
-                        <Link to="/admin/certificates">
-                          <Button color="primary" size="sm">
-                            See all
-                          </Button>
-                        </Link>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <div style={{ overflowY: "auto", maxHeight: "400px" }}>
-                    <Table
-                      className="align-items-center table-flush"
-                      responsive
-                    >
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Supplier</th>
-                          <th scope="col">Certificate Name</th>
-                          <th scope="col">Expiration</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredCertificates.map((certificate) => (
-                          <tr key={certificate._id}>
-                            <td>{certificate.SupplierName}</td>
-                            <td>{certificate.CertificateName}</td>
-                            <td>
-                              <Progress
-                                value={
-                                  certificate.DaysUntilExpiration <= 0
-                                    ? 100
-                                    : certificate.DaysUntilExpiration > 90
-                                    ? 30
-                                    : certificate.DaysUntilExpiration <= 60
-                                    ? 50
-                                    : 70
-                                }
-                                color={getCertificateProgressColor(
-                                  certificate.DaysUntilExpiration
-                                )}
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                </Card>
-              </Col>
-         
-          <Col xl="5">
-              {/*evaluation*/}
-              <Card className="shadow">
-                <CardHeader className="bg-transparent">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h2 className="mb-0">Evaluations</h2>
-                    </div>
-                    <div className="col text-right">
-                      <Link to="/admin/evaluations">
-                        <Button color="primary" size="sm">
-                          See all
-                        </Button>
-                      </Link>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <div style={{ overflowY: "auto", maxHeight: "400px" }}>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Supplier Name</th>
-                        {generateColumnHeaders().map((header, index) => (
-                          <th
-                            key={index}
-                            scope="col"
-                            style={{ paddingRight: "0.1px" }}
-                          >
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {suppliers.map((supplier, index) => (
-                        <tr key={index}>
-                          <td>{supplier.groupName}</td>
-                          {generateColumnHeaders().map((date, index) => {
-                            const monthIndex = index + 1; // Month index starts from 1
-                            const year = startYear + currentPage;
-                            const monthHasEvaluation = evaluations.some(
-                              (evaluation) => {
-                                const evaluationDate = new Date(
-                                  evaluation.evaluationDate
-                                );
-                                const evaluationMonth =
-                                  evaluationDate.getMonth() + 1;
-                                const evaluationYear =
-                                  evaluationDate.getFullYear();
-                                return (
-                                  evaluationMonth === monthIndex &&
-                                  evaluationYear === year &&
-                                  evaluation.supplierId === supplier._id
-                                );
-                              }
-                            );
-                            return (
-                              <td key={index}>
-                                {monthHasEvaluation ? (
-                                  <i className="fas fa-check text-success"></i> // Green tick icon
-                                ) : (
-                                  <i className="fas fa-times text-danger"></i> // Red x icon
-                                )}
-                              </td>
-                            );
-                          })}
-                          <td></td>
-                        </tr>
+              <div style={{ overflowY: "auto", maxHeight: "400px" }}>
+                <Table className="align-items-center table-flush" responsive>
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col">Supplier Name</th>
+                      {generateColumnHeaders().map((header, index) => (
+                        <th
+                          key={index}
+                          scope="col"
+                          style={{ paddingRight: "0.1px" }}
+                        >
+                          {header}
+                        </th>
                       ))}
-                    </tbody>
-                  </Table>
-                </div>
-                <div className="text-right">
-                  {currentPage > 0 && (
-                    <button
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={handlePrevPage}
-                    >
-                      Previous
-                    </button>
-                  )}
-                  {currentPage < totalPages - 1 && (
-                    <button
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={handleNextPage}
-                    >
-                      Next
-                    </button>
-                  )}
-                </div>
-              </Card>
-            </Col>
-        </Row>
-
-
-
-        <Row className="mt-9">
-          {/*total supp*/}
-          <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h2 className="mb-0">Total Suppliers</h2>
-                  </div>
-                </Row>
-              </CardHeader>
-              <CardBody>
-                <div className="chart">
-                  <Doughnut
-                    data={chartExample1}
-                    options={{
-                      ...chartOptions,
-                      cutoutPercentage: 60,
-                    }}
-                  />
-                </div>
-              </CardBody>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {suppliers.map((supplier, index) => (
+                      <tr key={index}>
+                        <td>{supplier.groupName}</td>
+                        {generateColumnHeaders().map((date, index) => {
+                          const monthIndex = index + 1; // Month index starts from 1
+                          const year = startYear + currentPage;
+                          const monthHasEvaluation = evaluations.some(
+                            (evaluation) => {
+                              const evaluationDate = new Date(
+                                evaluation.evaluationDate
+                              );
+                              const evaluationMonth =
+                                evaluationDate.getMonth() + 1;
+                              const evaluationYear =
+                                evaluationDate.getFullYear();
+                              return (
+                                evaluationMonth === monthIndex &&
+                                evaluationYear === year &&
+                                evaluation.supplierId === supplier._id
+                              );
+                            }
+                          );
+                          return (
+                            <td key={index}>
+                              {monthHasEvaluation ? (
+                                <i className="fas fa-check text-success"></i> // Green tick icon
+                              ) : (
+                                <i className="fas fa-times text-danger"></i> // Red x icon
+                              )}
+                            </td>
+                          );
+                        })}
+                        <td></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <div className="text-right">
+                {currentPage > 0 && (
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={handlePrevPage}
+                  >
+                    Previous
+                  </button>
+                )}
+                {currentPage < totalPages - 1 && (
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={handleNextPage}
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
             </Card>
           </Col>
-          {/*total employee*/}
-          <Col xl="3">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h2 className="mb-0">Total Employees</h2>
-                  </div>
-                </Row>
-              </CardHeader>
-              <CardBody>
-                <div className="chart">
-                  <Doughnut
-                    data={chartExample3}
-                    options={{
-                      ...chartOptions,
-                      cutoutPercentage: 60,
-                    }}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
+          <Col></Col>
         </Row>
       </Container>
     </>

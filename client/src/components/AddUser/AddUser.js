@@ -47,31 +47,28 @@ const AddUser = () => {
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
-  
+
     try {
-      const token = localStorage.getItem('token'); 
+      const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error('Authentication token missing');
+        throw new Error("Authentication token missing");
       }
-  
-    
+
       const randomPassword = generateRandomPassword();
-  
-    
+
       const response = await axios.post(
         "http://localhost:8000/send-email",
         { email, password: randomPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response.status === 200) {
-      
         await axios.post(
           "http://localhost:8000/register",
           { email, role, password: randomPassword },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-  
+
         setSuccessMessage("Password sent successfully!");
       } else {
         setError("Failed to send password. Please try again later.");
@@ -82,7 +79,6 @@ const AddUser = () => {
         error.response.data &&
         error.response.data.message
       ) {
-     
         setError(error.response.data.message);
       } else {
         setError("Failed to send password. Please try again later.");
@@ -91,7 +87,7 @@ const AddUser = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
@@ -112,24 +108,24 @@ const AddUser = () => {
                   />
                 </FormGroup>
                 <FormGroup>
-  <Label for="role">Select User Type:</Label>
-  <Input
-    id="role"
-    type="select"
-    value={role}
-    onChange={(e) => setUserRole(e.target.value)}
-    disabled={user.role === "employee"}
-  >
-    {user.role === "admin" ? (
-      <>
-        <option value="employee">Employee</option>
-        <option value="supplier">Supplier</option>
-      </>
-    ) : (
-      <option value="supplier">Supplier</option>
-    )}
-  </Input>
-</FormGroup>
+                  <Label for="role">Select User Type:</Label>
+                  <Input
+                    id="role"
+                    type="select"
+                    value={role}
+                    onChange={(e) => setUserRole(e.target.value)}
+                    disabled={user.role === "employee"}
+                  >
+                    {user.role === "admin" ? (
+                      <>
+                        <option value="employee">Employee</option>
+                        <option value="supplier">Supplier</option>
+                      </>
+                    ) : (
+                      <option value="supplier">Supplier</option>
+                    )}
+                  </Input>
+                </FormGroup>
 
                 <Button
                   type="submit"

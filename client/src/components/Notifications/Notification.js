@@ -63,7 +63,7 @@ const Notification = ({ user, isOpen, closeSidebar }) => {
       default:
         break;
     }
-    // Mark the notification as read
+ 
     const updatedReadNotifications = [...readNotifications];
     updatedReadNotifications[index] = true;
     setReadNotifications(updatedReadNotifications);
@@ -127,7 +127,7 @@ const Notification = ({ user, isOpen, closeSidebar }) => {
         </div>
         <div
           style={{
-            height: "calc(100% - 80px)", // Adjust height as needed
+            height: "calc(100% - 80px)",
             overflowY: "auto",
           }}
         >

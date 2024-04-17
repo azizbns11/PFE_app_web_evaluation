@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const evaluationSchema = new mongoose.Schema({
-  supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'user'}, // Reference to the User model
+  supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'user'},
   SupplierName: { type: String, required: true },
   evaluationDate: { type: Date, required: true },
   QualityNote: { type: Number, required: true },

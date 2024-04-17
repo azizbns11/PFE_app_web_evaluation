@@ -6,21 +6,21 @@ const Notification = require("../models/notification");
 const sendNotification = require("../utils/Notification");
 const Certificate = require("../models/certificate");
 
-// Function to check evaluations and send notifications
+
 const checkEvaluationsForNotification = async () => {
   try {
     console.log("Running monthly evaluation check...");
 
-    // Get the current month and year
+  
     const currentMonth = moment().month();
     const currentYear = moment().year();
 
-    // Find all suppliers
+
     const suppliers = await User.find({ role: "supplier" });
 
-    // Iterate through each supplier
+   
     for (const supplier of suppliers) {
-      // Check if the supplier has an evaluation for the current month
+   
       const evaluation = await Evaluation.findOne({
         supplierId: supplier._id,
         evaluationDate: {
@@ -29,7 +29,7 @@ const checkEvaluationsForNotification = async () => {
         },
       });
 
-      // If the supplier doesn't have an evaluation for the current month
+  
       if (!evaluation) {
         console.log(
           `Supplier ${
@@ -39,25 +39,25 @@ const checkEvaluationsForNotification = async () => {
           )}. Sending notification...`
         );
 
-        // Find users other than suppliers
+     
         const nonSupplierUsers = await User.find({ role: { $ne: "supplier" } });
 
-        // Create notification message
+ 
         const notificationMessage = `Please add an evaluation for supplier ${
           supplier.groupName
         } for ${moment().format("MMMM")}.`;
 
-        // Create notifications for users other than suppliers
+
         const notifications = nonSupplierUsers.map((user) => ({
           userId: user._id,
           message: notificationMessage,
           type: 'evaluation',
         }));
 
-        // Save notifications to the database
+    
         await Notification.insertMany(notifications);
 
-        // Trigger notification emails to users
+  
         const emailPromises = nonSupplierUsers.map((user) => {
           return sendNotification(
             user.email,
@@ -75,7 +75,7 @@ const checkEvaluationsForNotification = async () => {
   }
 };
 
-// Function to check certificates and send notifications
+
 const checkCertificatesForNotification = async () => {
   try {
     console.log("Running certificate expiration check...");
@@ -93,11 +93,22 @@ const checkCertificatesForNotification = async () => {
         const message = `Your certificate "${
           certificate.CertificateName
         }" is approaching expiration. Please recertify before the expiry date (${certificate.ExpireDate.toDateString()}). The recertification date is set for ${certificate.RecertificateDate.toDateString()}.`;
+
+   
+        const notification = new Notification({
+          userId: supplier._id,
+          message: message,
+          type: 'certificate',
+        });
+        await notification.save(); 
+
+   
         await sendNotification(
           supplier.email,
           "Certificate Expiration Alert!",
           message
         );
+
         certificate.notificationStatus = "sent";
         certificate.lastNotifiedDate = new Date();
         await certificate.save();
@@ -110,13 +121,13 @@ const checkCertificatesForNotification = async () => {
   }
 };
 
-// Schedule the tasks
-cron.schedule("0 9 28 * *", checkEvaluationsForNotification, {
-  scheduled: true,
-  timezone: "Africa/Tunis", // Set your timezone
-});
 
-cron.schedule("51 14 * * *", checkCertificatesForNotification, {
-  scheduled: true,
-  timezone: "Africa/Tunis", // Set your timezone
-});
+cron.schedule("12 20 17 * *", checkEvaluationsForNotification); // min hour day
+cron.schedule("28 20 * * *", checkCertificatesForNotification); 
+
+module.exports = {
+  checkEvaluationsForNotification,
+  checkCertificatesForNotification
+};
+
+
