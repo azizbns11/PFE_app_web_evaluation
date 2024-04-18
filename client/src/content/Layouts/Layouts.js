@@ -5,7 +5,7 @@ function Layouts({ children }) {
   const [showSidebar, setShowSidebar] = useState(false);
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname === "/login" || location.pathname === "/forgotpassword" || location.pathname === "/Messages" || location.pathname === "/EditProfile"|| location.pathname.startsWith("/resetpassword"))setShowSidebar(false);
+    if (location.pathname === "/" || location.pathname === "/forgotpassword" || location.pathname === "/Messages" || location.pathname === "/EditProfile"|| location.pathname.startsWith("/resetpassword"))setShowSidebar(false);
     else setShowSidebar(true);
   }, [location]);
   return <div>{showSidebar && children}</div>;

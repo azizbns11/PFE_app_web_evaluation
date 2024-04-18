@@ -96,28 +96,35 @@ const supplierController = {
   deleteSuppliereById: async (req, res) => {
     try {
       const supplierId = req.params.id;
-
-   
+  
+      console.log("Deleting supplier with ID:", supplierId);
+  
       const deletedSupplier = await User.findByIdAndDelete(supplierId);
-
+  
       if (!deletedSupplier) {
+        console.log("Supplier not found:", supplierId);
         return res.status(404).json({ message: "Supplier not found" });
       }
-
-    
-      await Certificate.deleteMany({ supplierId: supplierId });
-
-     
-      await Evaluation.deleteMany({ supplierId: supplierId });
-
+  
+      console.log("Deleted supplier:", deletedSupplier);
+  
+      const deleteCertificatesResult = await Certificate.deleteMany({ supplierId: supplierId });
+  
+      console.log("Deleted certificates:", deleteCertificatesResult);
+  
+      const deleteEvaluationsResult = await Evaluation.deleteMany({ supplierId: supplierId });
+  
+      console.log("Deleted evaluations:", deleteEvaluationsResult);
+  
       res.json({
         message: "Supplier, certificates, and evaluations deleted successfully",
       });
     } catch (error) {
-      console.error(error.message);
+      console.error("Error deleting supplier:", error);
       res.status(500).json({ message: "Server Error" });
     }
   },
+  
 
   getCurrentUser: async (req, res) => {
     try {

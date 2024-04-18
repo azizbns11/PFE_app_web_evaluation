@@ -54,7 +54,7 @@ const App = () => {
       />
     </Layout>
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       
       {routes(user).map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />

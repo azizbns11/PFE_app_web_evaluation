@@ -101,7 +101,28 @@ const Certificates = () => {
     }
   };
 
+  const updateCertificatesList = async () => {
+    try {
 
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:8000/api/certificates", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const formattedCertificates = response.data.map((certificate) => ({
+        ...certificate,
+        ExpireDate: formatDate(certificate.ExpireDate),
+        RecertificateDate: formatDate(certificate.RecertificateDate),
+      }));
+
+      setCertificates(formattedCertificates);
+      setFilteredCertificates(formattedCertificates);
+    } catch (error) {
+      console.error("Error fetching certificates:", error);
+    }
+  };
   const toggleAddModal = () => setAddModalOpen(!addModalOpen);
 
   const toggleEditModal = () => setEditModalOpen(!editModalOpen);
@@ -229,7 +250,7 @@ const Certificates = () => {
               </Card>
             </Col>
           </Row>
-          <AddCertificate isOpen={addModalOpen} toggle={toggleAddModal} />
+          <AddCertificate isOpen={addModalOpen} toggle={toggleAddModal} updateCertificatesList={updateCertificatesList}/>
           <EditCertificate
             isOpen={editModalOpen}
             toggle={toggleEditModal}

@@ -82,7 +82,7 @@ const Sidebar = (props) => {
   const { routes, logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
-    // Determine the redirection URL based on the user's role
+  
     let redirectionURL;
     switch (user.role) {
       case "admin":

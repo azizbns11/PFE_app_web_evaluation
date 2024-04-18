@@ -39,7 +39,7 @@ const SupplierDashboard = () => {
           }
         );
 
-        // Process data to generate chart dataset
+     
         const evaluationScores = response.data.reduce((acc, evaluation) => {
           const month = getMonth(new Date(evaluation.evaluationDate));
           const year = getYear(new Date(evaluation.evaluationDate));

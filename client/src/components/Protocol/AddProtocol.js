@@ -16,7 +16,7 @@ import {
   ModalBody,
 } from "reactstrap";
 
-const AddProtocol = ({ isOpen, toggle }) => {
+const AddProtocol = ({ isOpen, toggle , updateProtocolsList}) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     supplierName: "",
@@ -24,7 +24,7 @@ const AddProtocol = ({ isOpen, toggle }) => {
     file: null,
   });
   const [currentUser, setCurrentUser] = useState(null);
-
+  const [protocols, setProtocols] = useState([]);
   useEffect(() => {
     fetchCurrentUser();
   }, []);
@@ -59,7 +59,7 @@ const AddProtocol = ({ isOpen, toggle }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("supplierName", formData.supplierName);
@@ -67,7 +67,7 @@ const AddProtocol = ({ isOpen, toggle }) => {
       formDataToSend.append("protocolTitle", formData.protocolTitle);
       formDataToSend.append("file", formData.file);
       formDataToSend.append("supplierId", currentUser._id);
-
+  
       const response = await axios.post(
         "http://localhost:8000/api/protocols",
         formDataToSend,
@@ -78,16 +78,22 @@ const AddProtocol = ({ isOpen, toggle }) => {
           },
         }
       );
-
+  
+      setProtocols([...protocols, response.data]);
+  
+  
       setShowSuccess(true);
+  
       setFormData({
         status: "is being validated",
         file: null,
       });
+      updateProtocolsList();
     } catch (error) {
       console.error("Error:", error);
     }
   };
+  
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>

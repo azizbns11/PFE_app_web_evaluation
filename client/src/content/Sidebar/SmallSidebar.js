@@ -76,7 +76,7 @@ const SmallSidebar = () => {
       className="navbar-vertical fixed-left navbar-light bg-white"
       expand="md"
       id="sidenav-main"
-      style={{ zIndex: 1000, width: "70px", }} // Adjust the width here
+      style={{ zIndex: 1000, width: "70px", }} 
     >
       <Container fluid style={{ marginTop: "53px" }}>
         <Nav className="align-items-center d-md-none">

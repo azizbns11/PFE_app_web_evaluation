@@ -19,7 +19,7 @@ import Select from "react-select";
 import axios from "axios";
 import ReactDatetime from "react-datetime";
 
-const AddCertificate = ({ isOpen, toggle }) => {
+const AddCertificate = ({ isOpen, toggle, updateCertificatesList  }) => {
   const [formData, setFormData] = useState({
     SupplierName: "", 
     ExpireDate: "",
@@ -128,11 +128,9 @@ const AddCertificate = ({ isOpen, toggle }) => {
         CertificateName: "",
         certificateFile: null,
       });
+      updateCertificatesList();
     } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error:", error);
     }
   };
 

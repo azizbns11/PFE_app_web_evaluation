@@ -6,7 +6,7 @@ const useAuth = () => {
     role: null,
     id: null,
   });
-  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,7 +28,7 @@ const useAuth = () => {
       setUser({ isAuthenticated: false, role: null, id: null });
     }
 
-    setIsLoading(false); // Set loading state to false after user information is processed
+    setIsLoading(false); 
   }, []);
 
   const updateUserRole = (newRole) => {
@@ -36,14 +36,14 @@ const useAuth = () => {
   };
 
   const logout = () => {
-    // Clear user authentication state and token
+   
     setUser({ isAuthenticated: false, role: null, id: null });
     localStorage.removeItem("token");
   };
 
   const isAuthenticated = user.isAuthenticated;
 
-  return { user, updateUserRole, isAuthenticated, logout, isLoading }; // Return loading state
+  return { user, updateUserRole, isAuthenticated, logout, isLoading };
 };
 
 export default useAuth;

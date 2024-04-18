@@ -683,9 +683,9 @@ const AdminDashboard = (props) => {
                           return (
                             <td key={index}>
                               {monthHasEvaluation ? (
-                                <i className="fas fa-check text-success"></i> // Green tick icon
+                                <i className="fas fa-check text-success"></i> 
                               ) : (
-                                <i className="fas fa-times text-danger"></i> // Red x icon
+                                <i className="fas fa-times text-danger"></i> 
                               )}
                             </td>
                           );

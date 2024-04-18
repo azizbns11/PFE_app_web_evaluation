@@ -73,6 +73,21 @@ const Protocol = () => {
       console.error("Error fetching protocols:", error);
     }
   };
+  const updateProtocolsList = async () => {
+    try {
+      // Fetch the updated list of protocols from the server
+      const response = await axios.get("http://localhost:8000/api/protocols", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      // Update the protocols state with the new data
+      setProtocols(response.data);
+      setFilteredProtocols(response.data);
+    } catch (error) {
+      console.error("Error fetching protocols:", error);
+    }
+  };
 
   const handleSearchChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
@@ -282,7 +297,7 @@ const Protocol = () => {
           </Card>
         </Col>
       </Row>
-      <AddProtocol isOpen={addModalOpen} toggle={toggleAddModal} />
+      <AddProtocol isOpen={addModalOpen} toggle={toggleAddModal}  updateProtocolsList={updateProtocolsList} />
     </Container>
   );
 };

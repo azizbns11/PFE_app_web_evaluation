@@ -153,7 +153,7 @@ const AddEvaluation = ({ isOpen, toggle, updateEvaluationsList }) => {
         });
         setTimeout(() => setShowSuccess(false), 3000);
       } else if (response.status === 400) {
-        // Handle the case where the previous month's evaluation is missing
+      
         setShowError(true);
         setTimeout(() => setShowError(false), 3000);
       } else {

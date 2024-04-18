@@ -18,7 +18,7 @@ import SupplierDashboard from "./components/SuppliersList/Dashboard";
 
 
 const routes = (user) => [
-  // Admin Dashboard Route
+
   {
     path: "/admin/dashboard",
     element: <AdminDashboard />,
@@ -82,7 +82,7 @@ const routes = (user) => [
     exact: true,
   },
   {
-    path: "/resetpassword", // Corrected route path
+    path: "/resetpassword", 
     element: <ResetPassword />,
     allowedRoles: ["admin", "employee", "supplier"],
     exact: true,
