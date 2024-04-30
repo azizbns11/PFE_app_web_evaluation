@@ -7,7 +7,7 @@ const useAuth = () => {
     id: null,
   });
   const [isLoading, setIsLoading] = useState(true); 
-
+  const [error, setError] = useState(null);
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -43,7 +43,7 @@ const useAuth = () => {
 
   const isAuthenticated = user.isAuthenticated;
 
-  return { user, updateUserRole, isAuthenticated, logout, isLoading };
+  return { user, updateUserRole, isAuthenticated, logout, isLoading,  error, setError};
 };
 
 export default useAuth;

@@ -100,7 +100,11 @@ const loginUser = async (req, res) => {
 
   
     const token = jwt.sign({ userId: user._id, role: user.role }, 'azertyuiop', { expiresIn: '24h' });
-    
+    const userData = {
+      userId: user._id,
+      role: user.role,
+      // Add other user data you need here...
+    };
 
     res.json({ token, role: user.role, completedInfo });
   } catch (error) {

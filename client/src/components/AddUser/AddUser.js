@@ -89,9 +89,10 @@ const AddUser = () => {
   };
 
   return (
-    <Container className="mt-5">
+    <div style={{ backgroundColor: "#FFFAFA", minHeight: "86vh" }}>
+  <Container fluid>
       <Row className="justify-content-center">
-        <Col md="8">
+      <Col md="7" className="mt-7 ml-9"> 
           <Card className="shadow">
             <CardBody>
               <h2 className="text-center mb- mt-2">Add User</h2>
@@ -145,7 +146,7 @@ const AddUser = () => {
           </Card>
         </Col>
       </Row>
-    </Container>
+    </Container></div>
   );
 };
 export default AddUser;

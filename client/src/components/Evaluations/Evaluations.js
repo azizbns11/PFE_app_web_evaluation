@@ -241,11 +241,12 @@ const Evaluations = () => {
   );
 
   return (
-    <Container className="mt--5" fluid>
+    <div style={{ backgroundColor: "#FFFAFA", minHeight: "86vh" }}>
+    <Container fluid>
       <Row>
         <div className="col-xl-12">
-          <Card className="shadow mt-9" style={{ marginLeft: "250px" }}>
-            <CardHeader className="d-flex justify-content-between align-items-center border-0">
+          <Card className="shadow mt-5" style={{ marginLeft: "250px" }}>
+            <CardHeader className="d-flex justify-content-between align-items-center border-0" >
               <h3 className="mb-0">Evaluations</h3>
               <InputGroup style={{ maxWidth: "300px" }}>
                 <Input
@@ -388,6 +389,7 @@ const Evaluations = () => {
         <Legend />
       </div>
     </Container>
+    </div>
   );
 };
 
