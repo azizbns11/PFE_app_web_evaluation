@@ -111,11 +111,12 @@ const Suppliers = () => {
   
 
   return (
-    <Container className="mt--5" fluid>
+    <div style={{ backgroundColor: "#FFFAFA", minHeight: "86vh" }}>
+  <Container fluid>
       <Row>
         <Col xl="12">
-          <Card className="shadow mt-9" style={{ marginLeft: "250px" }}>
-            <CardHeader className="d-flex justify-content-between align-items-center border-0">
+          <Card className="shadow mt-7" style={{ marginLeft: "250px"}}>
+            <CardHeader className="d-flex justify-content-between align-items-center border-0" style={{ boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.5)"}}>
               <h3 className="mb-0">Suppliers List</h3>
               <InputGroup style={{ maxWidth: "300px" }}>
                 <Input
@@ -133,7 +134,7 @@ const Suppliers = () => {
                 />
               </InputGroup>
             </CardHeader>
-            <div style={{ overflowY: "auto", maxHeight: "400px" }}>
+            <div style={{ overflowY: "auto", maxHeight: "400px",boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.3)" }}>
             <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
                 <tr>
@@ -227,6 +228,7 @@ const Suppliers = () => {
         </ModalFooter>
       </Modal>
     </Container>
+    </div>
   );
 };
 

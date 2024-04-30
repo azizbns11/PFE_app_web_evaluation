@@ -1,6 +1,6 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
-// Define Schema for User Profile
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    
-   
+    required:true,
+  
   },
   position: {
     type: String,

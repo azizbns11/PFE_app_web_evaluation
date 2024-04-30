@@ -234,13 +234,13 @@ const SupplierDashboard = () => {
     <>
          <Container className="mt--8" fluid style={{ minHeight: "100vh",backgroundColor: "#FFFAFA" }}>
         <div className="header-body">
-          <Row className="mt-8">
+          <Row className="mt-9">
             <Col lg="6" xl="2" className="ml-auto">
-              <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
+              <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "#0d73e1" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                    <CardTitle tag="h5" className="text-uppercase text-white mb-0">
                         Quality Note
                       </CardTitle>
                       <span className="h2 font-weight-bold text-dark mb-0">
@@ -267,11 +267,11 @@ const SupplierDashboard = () => {
               </Card>
             </Col>
             <Col lg="6" xl="2" className="ml-6">
-            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "#0d73e1" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                    <CardTitle tag="h5" className="text-uppercase text-white mb-0">
                         Payment Term Note
                       </CardTitle>
                       <span className="h2 font-weight-bold text-dark mb-0">
@@ -297,11 +297,11 @@ const SupplierDashboard = () => {
               </Card>
             </Col>
             <Col lg="6" xl="2" className="ml-6">
-            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "#0d73e1" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                    <CardTitle tag="h5" className="text-uppercase text-white mb-0">
                         Logistic Note
                       </CardTitle>
                       <span className="h2 font-weight-bold text-dark mb-0">
@@ -327,11 +327,11 @@ const SupplierDashboard = () => {
               </Card>
             </Col>
             <Col lg="6" xl="2" className="ml-6">
-            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "rgba(54, 162, 235, 0.6)" }}>
+            <Card className="card-stats mb-4 mb-xl-0"style={{ backgroundColor: "#0d73e1" }}>
                 <CardBody>
                   <Row>
                     <div className="col">
-                    <CardTitle tag="h5" className="text-uppercase text-dark mb-0">
+                    <CardTitle tag="h5" className="text-uppercase text-white mb-0">
                         Billing Error Note
                       </CardTitle>
                       <span className="h2 font-weight-bold text-dark mb-0">
@@ -359,7 +359,7 @@ const SupplierDashboard = () => {
           </Row>
         </div>
 
-        <Row className="mt-7">
+        <Row className="mt-5">
           <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
             <Card className="shadow">
               <div>

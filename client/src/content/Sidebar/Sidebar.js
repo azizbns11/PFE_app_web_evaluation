@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as Link,useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
+import PlusOneOutlinedIcon from '@mui/icons-material/PlusOneOutlined';
 import {
   Navbar,
   NavItem,
@@ -276,11 +278,9 @@ const Sidebar = (props) => {
                 </NavItem>
                 <NavItem>
                   <NavLink to="/admin/adduser" tag={Link} className="nav-link">
-                    <i
-                      className="fa fa-plus-circle"
-                      aria-hidden="true"
-                      style={{ color: "#DA70D6",fontSize: "18px"  }}
-                    ></i>
+                  <i className="fa-solid fa-user-plus"  aria-hidden="true"
+                      style={{ color: "#DA70D6",fontSize: "18px"  }}></i>
+                    
                     Add User
                   </NavLink>
                 </NavItem>
@@ -319,15 +319,16 @@ const Sidebar = (props) => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/Messages" tag={Link} className="nav-link">
-                <i
-                  className="fa fa-comments"
-                  aria-hidden="true"
-                  style={{ color: "#3CB371" ,fontSize: "18px" }}
-                ></i>
-                Messages
-              </NavLink>
-            </NavItem>
+  <NavLink to="/Messages" tag={Link} className="nav-link">
+    <i
+      className="fa fa-comments"
+      aria-hidden="true"
+      style={{ color: "#3CB371", fontSize: "18px" }}
+    ></i>
+    Messages 
+    <PlusOneOutlinedIcon style={{ marginLeft: "40px", color: "red" }} />
+  </NavLink>
+</NavItem>
           </Nav>
      
         </Collapse>

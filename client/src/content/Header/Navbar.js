@@ -17,9 +17,20 @@ import {
   DropdownItem,
 } from "reactstrap";
 import axios from "axios";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
+  Drawer,
+  Badge,
+} from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import Notification from "../../components/Notifications/Notification";
-
+import LogoutIcon from "@mui/icons-material/Logout";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -28,14 +39,19 @@ const Header = () => {
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
   const navigate = useNavigate();
-
+  const [anchorEl, setAnchorEl] = useState(null);
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     }
   }, []);
-
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -88,38 +104,42 @@ const Header = () => {
   };
 
   return (
-    <div className="header bg-gradient-white py-2">
+    <div className="header bg-gradient-white py-1">
       <Notification
         user={user}
         isOpen={showSidebar}
         closeSidebar={() => setShowSidebar(false)}
       />
-      <Navbar
-        className="navbar-top navbar-dark"
-        expand="md"
-        id="navbar-main"
-        style={{
-          backgroundColor: "#FFFAFA" ,
-          justifyContent: "flex-end",
-          marginRight: -10,
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", 
-        }}
-      > 
+<Navbar
+  className="navbar-top navbar-dark"
+  expand="md"
+  id="navbar-main"
+  style={{
+    backgroundColor: "white",
+    justifyContent: "space-between", // Adjust alignment
+    paddingLeft: 290, // Add padding to the right
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+    height: 62, // Adjust the height of the Navbar
+  }}
+>
+
         <Container>
           <Collapse isOpen={isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
-              <Form className="mt-1 p-0 bg-light rounded shadow-sm">
+                <Form className="mt-0 p-0 bg-light rounded shadow-sm">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
-                      <InputGroupText style={{ color: "grey" }}>
+                      <InputGroupText
+                        style={{ color: "grey", fontSize: "0.8rem" }}
+                      >
                         <i className="fas fa-search" />
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
                       placeholder="Search"
                       type="text"
-                      style={{ color: "grey" }}
+                      style={{ color: "grey", fontSize: "0.8rem" }}
                     />
                   </InputGroup>
                 </Form>
@@ -129,7 +149,7 @@ const Header = () => {
                   <i
                     className="fas fa-bell fa-lg bell-icon"
                     style={{
-                      marginTop: "21px",
+                      marginTop: "16px",
                       cursor: "pointer",
                       color: "grey",
                     }}
@@ -137,34 +157,71 @@ const Header = () => {
                   />
                 </DropdownToggle>
               </UncontrolledDropdown>
+
               <NavItem className="d-none d-md-block">
                 <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret style={{ color: "grey" }}>
-                    {userData.image ? (
-                      <img
+                  <div>
+                    <IconButton
+                      onClick={handleClick}
+                      aria-controls="user-menu"
+                      aria-haspopup="true"
+                      aria-expanded={anchorEl ? "true" : undefined}
+                      style={{ backgroundColor: "white" }}
+                    >
+                      <Avatar
                         src={`http://localhost:8000/${userData.image}`}
-                        alt="Your Avatar"
-                        style={{
-                          borderRadius: "50%",
-                          width: "40px",
-                          height: "40px",
-                          marginRight: "10px",
-                        }}
+                        alt={user.name}
+                        sx={{ width: 29, height: 29, marginRight: 1 }} // Add margin to the Avatar
                       />
-                    ) : (
-                      <img
-                        src={require("../../assets/img/brand/user.png")}
-                        alt="Default Avatar"
-                        style={{
-                          borderRadius: "50%",
-                          width: "40px",
-                          height: "40px",
-                          marginRight: "10px",
-                        }}
-                      />
-                    )}
-                    {userData.userName || "Loading..."}
-                  </DropdownToggle>
+                      <Typography variant="body2" sx={{ fontSize: "0.9rem" }}>
+                        {userData.userName || "Loading..."}
+                      </Typography>
+                    </IconButton>
+
+                    <Menu
+                      id="user-menu"
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&::before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: "right", vertical: "top" }}
+                      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    >
+                      <MenuItem onClick={handleProfileClick}>
+                        <Avatar /> Profile
+                      </MenuItem>
+                      <MenuItem onClick={handleLogout}>
+                        <LogoutIcon /> Logout
+                      </MenuItem>
+                      <Divider />
+                    </Menu>
+                  </div>
+
                   <DropdownMenu right>
                     <DropdownItem onClick={handleProfileClick}>
                       Profile
