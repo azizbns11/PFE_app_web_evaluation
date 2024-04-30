@@ -15,15 +15,17 @@ import EditProfile from "./components/Profile/EditProfile";
 import Protocol from "./components/Protocol/Protocol";
 import AddProtocol from "./components/Protocol/AddProtocol";
 import SupplierDashboard from "./components/SuppliersList/Dashboard";
+import Dashadmin from "./components/Admin/Dashadmin";
 
 
 const routes = (user) => [
 
   {
     path: "/admin/dashboard",
-    element: <AdminDashboard />,
+    element: <Dashadmin />,
     allowedRoles: ["admin", "employee"],
     exact: true,
+    
   },
 
 
@@ -118,6 +120,8 @@ const routes = (user) => [
     allowedRoles: ["admin", "employee", "supplier"],
     exact: true,
   },
+
+  
 ];
 
 export default routes;

@@ -1,4 +1,3 @@
-// certificate.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -141,6 +140,18 @@ const Certificates = () => {
     );
   };
 
+  const getExpirationIcon = (expireDate) => {
+    const today = new Date();
+    const expirationDate = new Date(expireDate);
+  
+    if (expirationDate < today) {
+      // Certificate expired
+      return <i className="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>;
+    }
+    return null;
+  };
+  
+
   
   return (
     <>
@@ -200,7 +211,9 @@ const Certificates = () => {
                         <td>{certificate.SupplierName}</td>
                         <td>{certificate.CertificateName}</td>
                         <td>{certificate.CertificateNumber}</td>
-                        <td>{certificate.ExpireDate}</td>
+                        <td>
+                          {getExpirationIcon(certificate.ExpireDate)} {certificate.ExpireDate}
+                        </td>
                         <td>{certificate.RecertificateDate}</td>
                         <td>
                           <Button

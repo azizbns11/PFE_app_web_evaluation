@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import Notification from "../../components/Notifications/Notification";
+import { FaUser, FaSignOutAlt } from 'react-icons/fa'; // Import icons
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,7 +89,7 @@ const Header = () => {
   };
 
   return (
-    <div className="header bg-gradient-white py-2">
+    <div className="mr-auto">
       <Notification
         user={user}
         isOpen={showSidebar}
@@ -99,17 +100,17 @@ const Header = () => {
         expand="md"
         id="navbar-main"
         style={{
-          backgroundColor: "#FFFAFA" ,
-          justifyContent: "flex-end",
-          marginRight: -10,
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", 
+          backgroundColor: "#0096FF",
+          justifyContent: "space-between", // Align items to both ends
+          paddingLeft: "350px", // Add right padding
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
-      > 
+      >
         <Container>
           <Collapse isOpen={isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
-              <Form className="mt-1 p-0 bg-light rounded shadow-sm">
+                <Form className="mt-1 p-0 bg-light rounded shadow-sm">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText style={{ color: "grey" }}>
@@ -119,35 +120,37 @@ const Header = () => {
                     <Input
                       placeholder="Search"
                       type="text"
-                      style={{ color: "grey" }}
+                      style={{ color: "black" }}
                     />
                   </InputGroup>
                 </Form>
               </NavItem>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav>
-                  <i
-                    className="fas fa-bell fa-lg bell-icon"
-                    style={{
-                      marginTop: "21px",
-                      cursor: "pointer",
-                      color: "grey",
-                    }}
-                    onClick={handleBellClick}
-                  />
-                </DropdownToggle>
-              </UncontrolledDropdown>
-              <NavItem className="d-none d-md-block">
+              <NavItem>
                 <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret style={{ color: "grey" }}>
+                  <DropdownToggle nav>
+                    <i
+                      className="fas fa-bell fa-lg bell-icon"
+                      style={{
+                        marginTop: "21px",
+                        cursor: "pointer",
+                        color: "white",
+                      }}
+                      onClick={handleBellClick}
+                    />
+                  </DropdownToggle>
+                </UncontrolledDropdown>
+              </NavItem>
+              <NavItem>
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav style={{ color: "white" }}>
                     {userData.image ? (
                       <img
                         src={`http://localhost:8000/${userData.image}`}
                         alt="Your Avatar"
                         style={{
                           borderRadius: "50%",
-                          width: "40px",
-                          height: "40px",
+                          width: "30px",
+                          height: "30px",
                           marginRight: "10px",
                         }}
                       />
@@ -157,8 +160,8 @@ const Header = () => {
                         alt="Default Avatar"
                         style={{
                           borderRadius: "50%",
-                          width: "40px",
-                          height: "40px",
+                          width: "30px",
+                          height: "30px",
                           marginRight: "10px",
                         }}
                       />
@@ -167,19 +170,23 @@ const Header = () => {
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem onClick={handleProfileClick}>
-                      Profile
+                      <FaUser style={{ marginRight: "5px", color: "#007bff" }} /> Profile
                     </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
+                    <DropdownItem onClick={handleLogout}>
+                      <FaSignOutAlt style={{ marginRight: "5px", color: "#dc3545" }} /> Logout
+                    </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </NavItem>
             </Nav>
+            <Nav>
+            </Nav>
           </Collapse>
         </Container>
       </Navbar>
+
+
     </div>
   );
-};
-
+}
 export default Header;

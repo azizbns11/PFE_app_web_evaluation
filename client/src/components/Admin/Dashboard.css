@@ -1,0 +1,8 @@
+.bi-embedded {
+    display: inline-block;
+    width: 90%;
+    height: 800px;
+    vertical-align: -0.125em;
+    fill: currentColor;
+    overflow: hidden;
+  }
