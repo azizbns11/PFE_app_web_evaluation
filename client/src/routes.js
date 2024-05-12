@@ -1,5 +1,4 @@
-// Import Dashboard components for each role
-import AdminDashboard from "./components/Admin/Dashboard";
+
 
 import Profile from "./components/Profile/Profile";
 import AddUser from "./components/AddUser/AddUser";
@@ -15,16 +14,21 @@ import EditProfile from "./components/Profile/EditProfile";
 import Protocol from "./components/Protocol/Protocol";
 import AddProtocol from "./components/Protocol/AddProtocol";
 import SupplierDashboard from "./components/SuppliersList/Dashboard";
+
 import ChatPage from "./components/Messages/ChatPage";
+
+import Dashboard from "./components/Admin/Dashboard";
+
 
 
 const routes = (user) => [
 
   {
     path: "/admin/dashboard",
-    element: <AdminDashboard />,
+    element: <Dashboard />,
     allowedRoles: ["admin", "employee"],
     exact: true,
+    
   },
 
 
@@ -119,6 +123,8 @@ const routes = (user) => [
     allowedRoles: ["admin", "employee", "supplier"],
     exact: true,
   },
+
+  
 ];
 
 export default routes;

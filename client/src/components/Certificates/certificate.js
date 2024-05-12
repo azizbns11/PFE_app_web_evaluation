@@ -1,4 +1,3 @@
-// certificate.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -141,6 +140,18 @@ const Certificates = () => {
     );
   };
 
+  const getExpirationIcon = (expireDate) => {
+    const today = new Date();
+    const expirationDate = new Date(expireDate);
+  
+    if (expirationDate < today) {
+      // Certificate expired
+      return <i className="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>;
+    }
+    return null;
+  };
+  
+
   
   return (
     <>
@@ -199,7 +210,9 @@ const Certificates = () => {
                         <td>{certificate.SupplierName}</td>
                         <td>{certificate.CertificateName}</td>
                         <td>{certificate.CertificateNumber}</td>
-                        <td>{certificate.ExpireDate}</td>
+                        <td>
+                          {getExpirationIcon(certificate.ExpireDate)} {certificate.ExpireDate}
+                        </td>
                         <td>{certificate.RecertificateDate}</td>
                         <td>
                           <Button
@@ -255,12 +268,12 @@ const Certificates = () => {
             toggle={toggleEditModal}
             certificate={selectedCertificate}
             certificateId={selectedCertificate ? selectedCertificate._id : null}
-            updateCertificateInList={updateCertificateInList}
+            updateCertificatesList={updateCertificatesList}
           />
           <Modal isOpen={deleteConfirmationOpen} toggle={toggleDeleteConfirmation}>
         <ModalHeader toggle={toggleDeleteConfirmation}>Delete Confirmation</ModalHeader>
         <ModalBody>
-          Are you sure you want to delete the certificate {certificateToDelete && certificateToDelete.groupName}?
+          Are you sure you want to delete the certificate {certificateToDelete && certificateToDelete.CertificateName}?
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => handleDelete(certificateToDelete._id)}>

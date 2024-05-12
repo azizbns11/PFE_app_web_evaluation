@@ -16,8 +16,9 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import EditEmployee from "./EditEmployee";
-
+import useAuth from "../../hooks/useAuth"; 
 const Employees = () => {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,7 +128,9 @@ const Employees = () => {
                   <th scope="col">Last Name</th>
                   <th scope="col">Position</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Actions</th>
+                  {(user.role !== "employee") && (
+                        <th scope="col">Actions</th>
+                      )}
                 </tr>
               </thead>
               <tbody>
@@ -148,7 +151,7 @@ const Employees = () => {
                     <tr key={employee._id}>
                       <td>
                         <img
-                          src={`http://localhost:8000/${employee.image}`}
+                          src={employee.image}
                           alt={`${employee.firstName} ${employee.lastName}`}
                           style={{ width: "50px", height: "50px" }}
                         />
@@ -157,30 +160,32 @@ const Employees = () => {
                       <td>{employee.lastName}</td>
                       <td>{employee.position}</td>
                       <td>{employee.email}</td>
-                      <td>
-                        <Button
-                          onClick={() => handleEdit(employee)}
-                          outline
-                          color="primary"
-                          style={{
-                            padding: "0.2rem 0.4rem",
-                            fontSize: "0.8rem",
-                          }}
-                        >
-                          <i className="fa fa-pencil" aria-hidden="true"></i>
-                        </Button>{" "}
-                        <Button
-                          onClick={() => handleDeleteConfirmation(employee)} 
-                          outline
-                          color="primary"
-                          style={{
-                            padding: "0.2rem 0.4rem",
-                            fontSize: "0.8rem",
-                          }}
-                        >
-                          <i className="fa fa-trash" aria-hidden="true"></i>
-                        </Button>
-                      </td>
+                      {(user.role !== "employee") && (
+                            <td>
+                              <Button
+                                onClick={() => handleEdit(employee)}
+                                outline
+                                color="primary"
+                                style={{
+                                  padding: "0.2rem 0.4rem",
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                <i className="fa fa-pencil" aria-hidden="true"></i>
+                              </Button>{" "}
+                              <Button
+                                onClick={() => handleDeleteConfirmation(employee)}
+                                outline
+                                color="primary"
+                                style={{
+                                  padding: "0.2rem 0.4rem",
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                <i className="fa fa-trash" aria-hidden="true"></i>
+                              </Button>
+                            </td>
+                          )}
                     </tr>
                   ))
                 )}

@@ -74,6 +74,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       setToken(storedToken);
     }
   }, []);
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -108,7 +109,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       fetchUserData();
     }
   }, [user.id, token]);
-
+  console.log("User image:", userData.image);
   const handleOpenDrawer = () => {
     setDrawerOpen(true);
   };
@@ -235,7 +236,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
         selectedUserName = `${selectedUser.firstName} ${selectedUser.lastName}`;
       }
 
-      //console.log("Selected user name:", selectedUserName);
+
       setSelectedUser(selectedUser);
       setSelectedUserName(selectedUserName);
 
@@ -247,7 +248,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
         setSelectedChat(existingChat);
         setDrawerOpen(false);
       } else {
-        // console.log("Creating chat...");
+       
         const createdChat = await createChat(userId, handleClose);
         //  console.log("Chat created:", createdChat);
 
@@ -505,7 +506,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
               style={{ backgroundColor: "white" }}
             >
               <Avatar
-                src={`http://localhost:8000/${userData.image}`}
+                src={userData.image}
                 alt={user.name}
               />
             </IconButton>

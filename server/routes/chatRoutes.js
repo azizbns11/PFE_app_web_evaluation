@@ -7,5 +7,5 @@ router.post('/chat', chatController.createChat)
 router.get('/chat', chatController.fetchChats)
 router.post('/message',chatController.sendMessage)
 router.get('/message/:chatId',chatController.allMessages)
-
+router.delete('/chat/:chatId', chatController.deleteChat);
 module.exports = router;

@@ -123,6 +123,27 @@ allMessages: async (req, res) => {
   }
 },
 
+deleteChat: async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    
+    if (!chatId) {
+      console.log("Chat ID is missing");
+      return res.sendStatus(400);
+    }
+
+  
+    await Chat.findByIdAndDelete(chatId);
+
+   
+    await Message.deleteMany({ chat: chatId });
+
+    res.status(200).json({ message: 'Chat deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting chat:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
 };
 
 module.exports = chatController;

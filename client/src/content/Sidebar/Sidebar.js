@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink as Link,useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
+import { useMediaQuery } from "@mui/material";
 import PlusOneOutlinedIcon from '@mui/icons-material/PlusOneOutlined';
 import {
   Navbar,
@@ -82,6 +83,7 @@ const Sidebar = (props) => {
   }, [user.id, token]);
 
   const { routes, logo } = props;
+  const isSmallScreen = useMediaQuery("(max-width:770px)");
   let navbarBrandProps;
   if (logo && logo.innerLink) {
   
@@ -138,6 +140,7 @@ const Sidebar = (props) => {
             />
           </NavbarBrand>
         ) : null}
+           {!isSmallScreen && (
         <Nav className="align-items-center d-md-none">
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
@@ -177,6 +180,7 @@ const Sidebar = (props) => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
+          )}
         <Collapse navbar isOpen={collapseOpen}>
           <div className="navbar-collapse-header d-md-none">
             <Row>

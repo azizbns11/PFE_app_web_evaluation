@@ -80,7 +80,6 @@ const SupplierDetails = ({
         );
         const data = await response.json();
 
-     
         setCountries(data.countries);
       } catch (error) {
         console.error("Error fetching countries:", error);
@@ -91,7 +90,7 @@ const SupplierDetails = ({
   }, []);
 
   const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption); 
+    setSelectedCountry(selectedOption);
   };
 
   useEffect(() => {
@@ -191,10 +190,9 @@ const SupplierDetails = ({
     try {
       const token = localStorage.getItem("token");
 
-    
       const updatedFormData = {
         ...editedFormData,
-        country: selectedCountry ? selectedCountry.value : "", 
+        country: selectedCountry ? selectedCountry.label : "",
       };
 
       const response = await axios.put(
@@ -315,17 +313,21 @@ const SupplierDetails = ({
             supplierId={supplierId}
           />
         ) : showCertificateDetails ? (
-          <CertificateDetails
-            certificateData={certificateData}
-            loading={loadingCertificates}
-            supplierId={supplierId}
-          />
+          <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+            <CertificateDetails
+              certificateData={certificateData}
+              loading={loadingCertificates}
+              supplierId={supplierId}
+            />
+          </div>
         ) : showProtocolDetails ? (
-          <ProtocolDetails
-            protocols={protocols}
-            loading={loadingProtocols}
-            supplierId={supplierId}
-          />
+          <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+            <ProtocolDetails
+              protocols={protocols}
+              loading={loadingProtocols}
+              supplierId={supplierId}
+            />
+          </div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             <div style={{ flex: 1 }}>
@@ -340,7 +342,7 @@ const SupplierDetails = ({
                     style={{ width: "200px" }}
                   />
                 ) : (
-                  supplier?.groupName ?? "" 
+                  supplier?.groupName ?? ""
                 )}
               </p>
               <p>
@@ -402,13 +404,13 @@ const SupplierDetails = ({
               <p>
                 <strong>Country:</strong>{" "}
                 {!editing ? (
-                  editedFormData.country 
+                  editedFormData.country
                 ) : (
                   <FormGroup>
                     <Label htmlFor="input-country"></Label>
                     <Select
                       options={countries}
-                      value={selectedCountry} 
+                      value={selectedCountry}
                       onChange={handleCountryChange}
                       placeholder="Select Country"
                     />
@@ -418,7 +420,6 @@ const SupplierDetails = ({
             </div>
             <div style={{ flex: 1 }}>
               {" "}
-            
               <p>
                 <strong>Email:</strong>{" "}
                 {editing ? (

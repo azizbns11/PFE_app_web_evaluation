@@ -20,7 +20,8 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
   const [editedFormData, setEditedFormData] = useState({
     firstName: "", 
     lastName: "", 
-    position: "" 
+    position: "" ,
+    phone: "",
   });
 
   
@@ -29,7 +30,8 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
       setEditedFormData({
         firstName: employee.firstName || "",
         lastName: employee.lastName || "",
-        position: employee.position || "" 
+        position: employee.position || "" ,
+        phone: employee.phone || "" ,
       });
     }
   }, [employee]);
@@ -109,6 +111,17 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
                 type="text"
                 name="position"
                 value={editedFormData.position || ""}
+                onChange={handleInputChange}
+              />
+            </FormGroup>
+          </Col>
+          <Col md="6">
+            <FormGroup>
+              <Label for="Phone">Phone</Label>
+              <Input
+                type="text"
+                name="phone"
+                value={editedFormData.phone || ""}
                 onChange={handleInputChange}
               />
             </FormGroup>

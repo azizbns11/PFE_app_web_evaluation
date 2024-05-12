@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
-
+import ReactDatetime from "react-datetime";
 import axios from "axios";
 import {
- 
+  Container,
   Row,
   Col,
-  
+  Form,
   FormGroup,
   Label,
   Button,
   Alert,
-
-  Modal, ModalHeader, ModalBody, ModalFooter, Input
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Modal,
+  ModalHeader,
+  ModalBody,Input,ModalFooter
 } from "reactstrap";
-const EditCertificate = ({ isOpen, toggle, certificate, certificateId, updateCertificateInList }) => {
+const EditCertificate = ({ isOpen, toggle, certificate, certificateId, updateCertificatesList }) => {
   const [editing, setEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); 
   const [editedFormData, setEditedFormData] = useState({
@@ -76,6 +80,9 @@ const EditCertificate = ({ isOpen, toggle, certificate, certificateId, updateCer
       certificateFile: e.target.files[0],
     });
   };
+  const handleDateChange = (date, field) => {
+    setEditedFormData({ ...editedFormData, [field]: date });
+  };
 
   const handleSubmit = async () => {
     try {
@@ -99,8 +106,7 @@ const EditCertificate = ({ isOpen, toggle, certificate, certificateId, updateCer
         }
       );
 
-      const updatedCertificate = response.data;
-      updateCertificateInList(updatedCertificate);
+      updateCertificatesList();
       toggle();
       setEditing(false);
 
@@ -159,28 +165,48 @@ const EditCertificate = ({ isOpen, toggle, certificate, certificateId, updateCer
             </FormGroup>
           </Col>
           <Col md="6">
-            <FormGroup>
-              <Label for="ExpireDate">Expire Date</Label>
-              <Input
-                type="text"
-                name="ExpireDate"
-                value={editedFormData.ExpireDate || ""}
-                onChange={handleInputChange}
-              />
-            </FormGroup>
+          <FormGroup>
+                  <Label for="ExpireDate">Expire Date</Label>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-calendar-grid-58" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <ReactDatetime
+                      inputProps={{
+                        placeholder: "Expire Date",
+                        className: "form-control",
+                      }}
+                      timeFormat={false}
+                      onChange={(date) => handleDateChange(date, "ExpireDate")}
+                    />
+                  </InputGroup>
+                </FormGroup>
           </Col>
         </Row>
         <Row>
           <Col md="6">
-            <FormGroup>
-              <Label for="RecertificateDate">Recertification Date</Label>
-              <Input
-                type="text"
-                name="RecertificateDate"
-                value={editedFormData.RecertificateDate || ""}
-                onChange={handleInputChange}
-              />
-            </FormGroup>
+          <FormGroup>
+                  <Label for="RecertificateDate">Recertificate Date</Label>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-calendar-grid-58" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <ReactDatetime
+                      inputProps={{
+                        placeholder: "Recertificate Date",
+                        className: "form-control",
+                      }}
+                      timeFormat={false}
+                      onChange={(date) =>
+                        handleDateChange(date, "RecertificateDate")
+                      }
+                    />
+                  </InputGroup>
+                </FormGroup>
           </Col>
           <Col md="6">
             <FormGroup>

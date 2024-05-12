@@ -159,7 +159,7 @@ const Suppliers = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={`http://localhost:8000/${supplier.image}`}
+                          src={supplier.image}
                           alt={`${supplier.groupName} `}
                           style={{ width: "50px", height: "50px" }}
                         />
