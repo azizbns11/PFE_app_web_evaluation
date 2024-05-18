@@ -5,12 +5,17 @@ import { Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from '@mui/icons-material/Delete';
+import io from "socket.io-client";
+
 const MyChats = ({ onSelectChat}) => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const { user } = useAuth();
   const [deleteMenuOpen, setDeleteMenuOpen] = useState(null);
+  const [deleteMenuChatId, setDeleteMenuChatId] = useState(null);
   const [showLoading, setShowLoading] = useState(true);
+  const ENDPOINT = "http://localhost:8000";
+
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -35,6 +40,9 @@ const MyChats = ({ onSelectChat}) => {
   useEffect(() => {
     //console.log("Chats updated:", chats);
   }, [chats]);
+
+  
+
   const handleChatClick = (chat) => {
     setSelectedChat(chat);
     onSelectChat(chat);
@@ -71,13 +79,14 @@ const MyChats = ({ onSelectChat}) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setChats(chats.filter((chat) => chat._id !== chatId)); 
+      setChats(chats.filter((chat) => chat._id !== chatId));
     } catch (error) {
       console.error("Error deleting chat:", error);
-     
     }
-    setDeleteMenuOpen(null); 
+    setDeleteMenuOpen(null);
+    setDeleteMenuChatId(null);
   };
+
   return (
     <Box
       sx={{
@@ -160,15 +169,21 @@ const MyChats = ({ onSelectChat}) => {
                   </Typography>
                 )}
                 <IconButton
-                  onClick={(event) => setDeleteMenuOpen(event.currentTarget)}
+                  onClick={(event) => {
+                    setDeleteMenuOpen(event.currentTarget);
+                    setDeleteMenuChatId(chat._id); // Set the chat ID
+                  }}
                   sx={{ marginLeft: "350px", marginTop: "-50px" }}
                 >
                   <MoreVertIcon />
                 </IconButton>
                 <Menu
                   anchorEl={deleteMenuOpen}
-                  open={Boolean(deleteMenuOpen)}
-                  onClose={() => setDeleteMenuOpen(null)}
+                  open={Boolean(deleteMenuOpen && deleteMenuChatId === chat._id)} 
+                  onClose={() => {
+                    setDeleteMenuOpen(null);
+                    setDeleteMenuChatId(null);
+                  }}
                 >
                  <MenuItem onClick={() => handleDeleteChat(chat._id)}>
                     <DeleteIcon sx={{ mr: 0.5 }} fontSize="small" /> Delete Chat

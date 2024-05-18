@@ -17,9 +17,8 @@ import SupplierDashboard from "./components/SuppliersList/Dashboard";
 
 import ChatPage from "./components/Messages/ChatPage";
 
-import Dashboard from "./components/Admin/Dashboard";
 
-
+import Dashboard from "./components/Admin/Dashboard"
 
 const routes = (user) => [
 

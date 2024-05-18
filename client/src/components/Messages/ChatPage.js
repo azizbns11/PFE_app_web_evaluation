@@ -97,7 +97,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
           }
         );
 
-        console.log("User data:", response.data);
+     
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -109,7 +109,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       fetchUserData();
     }
   }, [user.id, token]);
-  console.log("User image:", userData.image);
+
   const handleOpenDrawer = () => {
     setDrawerOpen(true);
   };
@@ -190,27 +190,37 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       console.log("Response data:", response.data);
-
-      const filteredUsers = response.data.filter((user) => {
+  
+      const filteredUsers = response.data.filter((searchUser) => {
+        // Exclude the current user
+        if (searchUser._id === user.id) {
+          return false;
+        }
+  
+        // If the current user is a supplier, exclude other suppliers
+        if (user.role === "supplier" && searchUser.role === "supplier") {
+          return false;
+        }
+  
         if (
-          user.role === "admin" ||
-          user.role === "employee" ||
-          user.role === "supplier"
+          searchUser.role === "admin" ||
+          searchUser.role === "employee" ||
+          searchUser.role === "supplier"
         ) {
-          if (user.role === "admin" || user.role === "employee") {
+          if (searchUser.role === "admin" || searchUser.role === "employee") {
             return (
-              user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-              user.lastName?.toLowerCase().includes(search.toLowerCase())
+              searchUser.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+              searchUser.lastName?.toLowerCase().includes(search.toLowerCase())
             );
-          } else if (user.role === "supplier") {
-            return user.groupName?.toLowerCase().includes(search.toLowerCase());
+          } else if (searchUser.role === "supplier") {
+            return searchUser.groupName?.toLowerCase().includes(search.toLowerCase());
           }
         }
         return false;
       });
-
+  
       setSearchResult(filteredUsers);
     } catch (error) {
       console.error("Error searching users:", error);
@@ -218,6 +228,8 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       setLoading(false);
     }
   };
+  
+  
 
   const handleFunction = async (userId) => {
     try {
@@ -386,6 +398,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       redirectionURL = "/";
   }
   return (
+    
     <ChatContext.Provider
       value={{
         selectedChat,
@@ -631,6 +644,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
             </Grid>
           </Grid>
         </Container>
+   
       </div>
     </ChatContext.Provider>
   );

@@ -180,7 +180,7 @@ const ChatBox = ({ selectedChat, onNewMessage, selectedUserName }) => {
     return "Group Chat";
   };
 
-  console.log("Selected chat in ChatBox:", selectedChat);
+  //console.log("Selected chat in ChatBox:", selectedChat);
 
   const isSameSender = (messages, m, i, userId) => {
     return (

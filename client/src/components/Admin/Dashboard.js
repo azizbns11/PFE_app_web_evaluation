@@ -164,8 +164,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalSuppliers, 100 - totalSuppliers],
-        backgroundColor: ["#FF6384", "#48D1CC"],
-        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
+        backgroundColor: ["#FFD700", "#00CED1"],
+        hoverBackgroundColor: ["#FFFACD", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
@@ -176,8 +176,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalEmployees, 100 - totalEmployees],
-        backgroundColor: ["#FF6384", "#48D1CC"],
-        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
+        backgroundColor: ["#FFD700", "#00CED1"],
+        hoverBackgroundColor: ["#FFFACD", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
