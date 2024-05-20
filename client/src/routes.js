@@ -6,7 +6,7 @@ import AddUser from "./components/AddUser/AddUser";
 import SuppliersList from "./components/SuppliersList/Suppliers";
 import Evaluations from "./components/Evaluations/Evaluations";
 import Employees from "./components/EmployeeList/Employees";
-import Messages from "./components/Messages/Messages";
+
 import Certificates from "./components/Certificates/certificate";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ForgotPassword/ResetPassword";
@@ -16,6 +16,8 @@ import Protocol from "./components/Protocol/Protocol";
 import AddProtocol from "./components/Protocol/AddProtocol";
 import SupplierDashboard from "./components/SuppliersList/Dashboard";
 import Dashadmin from "./components/Admin/Dashadmin";
+import ChatPage from "./components/Messages/ChatPage";
+
 
 
 const routes = (user) => [
@@ -114,9 +116,9 @@ const routes = (user) => [
     allowedRoles: ["supplier"],
     exact: true,
   },
-  {
+ {
     path: "/Messages",
-    element: <Messages />,
+    element: <ChatPage />,
     allowedRoles: ["admin", "employee", "supplier"],
     exact: true,
   },

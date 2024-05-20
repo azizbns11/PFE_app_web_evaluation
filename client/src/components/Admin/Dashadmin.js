@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
+
 const Dashadmin = () => {
     const [evaluations, setEvaluations] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -38,6 +39,7 @@ const Dashadmin = () => {
     "Nov",
     "Dec",
   ];
+  
 
   const generateColumnHeaders = () => {
     const columnHeaders = [];
@@ -120,52 +122,20 @@ const Dashadmin = () => {
 
 
     return( 
-        <div><center><Container className="mt--9" fluid style={{ backgroundColor: "#FFFAFA" }}>
+        <div><center><br/>
+<Container className="mt--9"  fluid style={{ backgroundColor: "#FFFAFA" }}>
     <Row className="mt-9">
-        <Col className="d-flex justify-content-center" md={6}> {/* Adjust the column width as needed */}
-            <section >
-        <section id="bi-report" style={{ width: '420%', height: '100px' }}> 
-            <PowerBIEmbed
-                embedConfig = {{
-                    type: 'report',   // Since we are reporting a BI report, set the type to report
-                    id: '62936c04-adb1-42d0-bf68-215881d1e690', // Add the report Id here
-                    embedUrl: "https://app.powerbi.com/reportEmbed?reportId=62936c04-adb1-42d0-bf68-215881d1e690&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVNPVVRILUFGUklDQS1OT1JUSC1BLVBSSU1BUlktcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d", // Add the embed url here
-                    accessToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkwxS2ZLRklfam5YYndXYzIyeFp4dzFzVUhIMCIsImtpZCI6IkwxS2ZLRklfam5YYndXYzIyeFp4dzFzVUhIMCJ9.eyJhdWQiOiJodHRwczovL2FuYWx5c2lzLndpbmRvd3MubmV0L3Bvd2VyYmkvYXBpIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvNTAzMzI0MTMtZjQ5ZC00Y2E5LTkxNDktMDQ1NmVhMWIyMzdjLyIsImlhdCI6MTcxNDQ3MzEyMywibmJmIjoxNzE0NDczMTIzLCJleHAiOjE3MTQ0Nzc4ODgsImFjY3QiOjAsImFjciI6IjEiLCJhaW8iOiJBVlFBcS84V0FBQUFubHd5ZElKc2FYWlhVMkR2Rk1lUXdFWG9iWEZMcGJSa1UrV2ExTWU3RTBPR2haTzJKQjVPSk9YT2dvZzAzd205M2k4NC9DL204bEFXeGpEaGZzYjA1bGV0NS9NV3VDNzBHZnArWloybEFFUT0iLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiODcxYzAxMGYtNWU2MS00ZmIxLTgzYWMtOTg2MTBhN2U5MTEwIiwiYXBwaWRhY3IiOiIwIiwiZmFtaWx5X25hbWUiOiJiZW5zYWxlbSIsImdpdmVuX25hbWUiOiJBeml6IiwiaXBhZGRyIjoiMTYwLjE1OS4yMTAuNjAiLCJuYW1lIjoiQXppeiBiZW5zYWxlbSIsIm9pZCI6IjE1MmRlNjY1LWZlZWEtNDQ0OS04ZGMxLWJhMjgzYjVjMDgwNSIsInB1aWQiOiIxMDAzMjAwMzczMTUzM0JCIiwicmgiOiIwLkFhOEFFeVF6VUozMHFVeVJTUVJXNmhzamZBa0FBQUFBQUFBQXdBQUFBQUFBQUFBZEFkVS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJvSExKa2hCRzduOTROcjlNNmY5ZlJuekJYdTMxNFJ4bUJ1Z0wxVUhvckxNIiwidGlkIjoiNTAzMzI0MTMtZjQ5ZC00Y2E5LTkxNDktMDQ1NmVhMWIyMzdjIiwidW5pcXVlX25hbWUiOiJBeml6YmVuc2FsZW1ASVNJTU01MTgub25taWNyb3NvZnQuY29tIiwidXBuIjoiQXppemJlbnNhbGVtQElTSU1NNTE4Lm9ubWljcm9zb2Z0LmNvbSIsInV0aSI6IjR2Vm1ibzNwWGtHWFRvU1BPNGFDQVEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbIjYyZTkwMzk0LTY5ZjUtNDIzNy05MTkwLTAxMjE3NzE0NWUxMCIsImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfcGwiOiJmciJ9.d_m6Ts7PvxOwiWo5FclVhip1RoqDiOJ0hzDG0udy6JWf8MhCw3STaDfMYdIRslSz_shX0xdlGGkKaTVg7xUUOeir69MT_PfoDwYvGNl2bwFyadqD0PL5G9KTZjnHutPvRwNrJ4tsDxcmQi-rnPxrW_Rn5UFBpGx5M5gD1l7u38SUTFXCTJ1rGBH6JAFI1ZieN-vjz7dWVsRMhMd1oyvrQB0gvkWpcUIMLgxDBwA3FysdRwawI5I8egoKC4QGO18WT7k904dFsD4GfBKA0dW4CpfQl9T9z1gXeoLBUWErySuSJZMKqN7hDCk_pnETML73F76UKFYFIfZgVwacK0EfrA', // Add the access token here
-                    tokenType: models.TokenType.Aad, // Since we are using an Azure Active Directory access token, set the token type to Aad
-                    settings: {
-                        layoutType: models.LayoutType.FitToWidth,
-                        panes: {
-                            filters: {
-                                expanded: false,
-                                visible: false // Hide the filter pane
-                            }
-                        },
-                        background: models.BackgroundType.Transparent,
-                        navContentPaneEnabled: false
-                    }
-                }}
-
-                eventHandlers = {
-                    new Map([
-                        ['loaded', function () {console.log('Report loaded');}],
-                        ['rendered', function () {console.log('Report rendered');}],
-                        ['error', function (event) {console.log(event.detail);}],
-                        ['visualClicked', () => console.log('visual clicked')],
-                        ['pageChanged', (event) => console.log(event)],
-                    ])
-                }
-
-            
-
-                getEmbeddedComponent = { (embeddedReport) => {
-                    window.report = embeddedReport; // save report in window object
-                }}
-                cssClassName = { "bi-embedded" }
-            />
+        <Col  md={12} >
+        <section style={{ width: '80%', height: '100px'}} > 
+        <iframe title="pfedashboard" width="110%" height="630px" src="https://app.powerbi.com/reportEmbed?reportId=37eea7d4-8c42-4ef6-93ff-7d3502885c29&autoAuth=true&ctid=84c31ca0-ac3b-4eae-ad11-519d80233e6f&navContentPaneEnabled=false&filterPaneEnabled=false&$filter=Query2/Name eq 'Type2'" 
+        frameborder="0" allowFullScreen="true" style={{ marginLeft: "30px" , border:"none"}}>
+                </iframe>
         </section>
-    </section>
     </Col>
-    </Row>
+    </Row></Container>
+    <br/>
+    <Container className="mt--9" fluid style={{ backgroundColor: "#FFFAFA" }}>
+    <br/><br/><br/><br/>
     <Row style={{ marginTop: "600px" }}>
     <Col className="mb-5 mb-xl-0" xl="5" style={{ marginLeft: "250px" }}>
             {/*evaluation*/}
