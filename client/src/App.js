@@ -11,6 +11,7 @@ import Sidebar from "./content/Sidebar/Sidebar";
 import Header from "./content/Header/Navbar";
 import axios from "axios";
 
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState({ firstName: "" });

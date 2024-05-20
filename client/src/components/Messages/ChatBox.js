@@ -19,7 +19,7 @@ const ChatBox = ({ selectedChat, onNewMessage, selectedUserName }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  let timer;
+
   const [unreadMessages, setUnreadMessages] = useState(0);
   const ENDPOINT = "http://localhost:8000";
   const [socket, setSocket] = useState(null);
@@ -180,7 +180,7 @@ const ChatBox = ({ selectedChat, onNewMessage, selectedUserName }) => {
     return "Group Chat";
   };
 
-  console.log("Selected chat in ChatBox:", selectedChat);
+  //console.log("Selected chat in ChatBox:", selectedChat);
 
   const isSameSender = (messages, m, i, userId) => {
     return (
@@ -291,7 +291,7 @@ const ChatBox = ({ selectedChat, onNewMessage, selectedUserName }) => {
                   border: "1px solid #ccc",
                   borderRadius: "8px",
                   padding: "10px",
-                  height: "calc(100% - 113px)",
+                  height: "calc(100% - 84px)",
                   overflowY: "auto",
                   bgcolor: "#E0E8F2",
                 }}
@@ -311,8 +311,8 @@ const ChatBox = ({ selectedChat, onNewMessage, selectedUserName }) => {
                   <CircularProgress
                     sx={{
                       position: "absolute",
-                      bottom: "40px",
-                      left: "10px",
+                      bottom: "280px",
+                      left: "410px",
                     }}
                   />
                 ) : (

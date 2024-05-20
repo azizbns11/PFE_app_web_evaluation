@@ -18,15 +18,12 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import {
-  Box,
   Typography,
   IconButton,
   Avatar,
   Menu,
   MenuItem,
   Divider,
-  Drawer,
-  Badge,
 } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import Notification from "../../components/Notifications/Notification";
@@ -40,6 +37,7 @@ const Header = () => {
   const [token, setToken] = useState("");
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -87,6 +85,20 @@ const Header = () => {
       fetchUserData();
     }
   }, [user, token]);
+  useEffect(() => {
+    console.log("Header component mounted");
+
+    const storedUnreadNotifications = localStorage.getItem(
+      "unreadNotifications"
+    );
+    if (storedUnreadNotifications) {
+      setUnreadNotifications(parseInt(storedUnreadNotifications));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("unreadNotifications", unreadNotifications);
+  }, [unreadNotifications]);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -101,33 +113,37 @@ const Header = () => {
 
   const handleBellClick = () => {
     setShowSidebar(!showSidebar);
-  };
+    console.log("Bell clicked. Show sidebar:", !showSidebar);
 
+    if (!showSidebar) {
+      setUnreadNotifications(0);
+    }
+  };
   return (
-    <div className="header bg-gradient-white py-1">
+    <div className="header bg-gradient-white py-0">
       <Notification
         user={user}
         isOpen={showSidebar}
         closeSidebar={() => setShowSidebar(false)}
+        setUnreadNotifications={setUnreadNotifications}
       />
-<Navbar
-  className="navbar-top navbar-dark"
-  expand="md"
-  id="navbar-main"
-  style={{
-    backgroundColor: "white",
-    justifyContent: "space-between", // Adjust alignment
-    paddingLeft: 290, // Add padding to the right
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-    height: 62, // Adjust the height of the Navbar
-  }}
->
-
+      <Navbar
+        className="navbar-top navbar-dark"
+        expand="md"
+        id="navbar-main"
+        style={{
+          backgroundColor: "#4169E1",
+          justifyContent: "space-between",
+          paddingLeft: 290,
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+          height: 68,
+        }}
+      >
         <Container>
           <Collapse isOpen={isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
-                <Form className="mt-0 p-0 bg-light rounded shadow-sm">
+                <Form className="mt-1 p-0 bg-light rounded shadow-sm">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText
@@ -149,12 +165,18 @@ const Header = () => {
                   <i
                     className="fas fa-bell fa-lg bell-icon"
                     style={{
-                      marginTop: "16px",
+                      marginTop: "21px",
                       cursor: "pointer",
-                      color: "grey",
+                      color: "white",
                     }}
                     onClick={handleBellClick}
-                  />
+                  >
+                    {unreadNotifications > 0 && (
+                      <span className="badge badge-danger">
+                        {unreadNotifications}
+                      </span>
+                    )}
+                  </i>
                 </DropdownToggle>
               </UncontrolledDropdown>
 
@@ -166,16 +188,12 @@ const Header = () => {
                       aria-controls="user-menu"
                       aria-haspopup="true"
                       aria-expanded={anchorEl ? "true" : undefined}
-                      style={{ backgroundColor: "white" }}
                     >
                       <Avatar
-                        src={`http://localhost:8000/${userData.image}`}
+                        src={`${userData.image}`}
                         alt={user.name}
-                        sx={{ width: 29, height: 29, marginRight: 1 }} // Add margin to the Avatar
+                        sx={{ width: 35, height: 35, marginRight: 1 }}
                       />
-                      <Typography variant="body2" sx={{ fontSize: "0.9rem" }}>
-                        {userData.userName || "Loading..."}
-                      </Typography>
                     </IconButton>
 
                     <Menu
@@ -212,13 +230,34 @@ const Header = () => {
                       transformOrigin={{ horizontal: "right", vertical: "top" }}
                       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                     >
-                      <MenuItem onClick={handleProfileClick}>
-                        <Avatar /> Profile
+                      <MenuItem
+                        onClick={handleProfileClick}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <i
+                          className="fa fa-user"
+                          aria-hidden="true"
+                          style={{ marginRight: "10px" }}
+                        ></i>{" "}
+                        {/* Adjust margin as needed */}
+                        Profile
                       </MenuItem>
-                      <MenuItem onClick={handleLogout}>
-                        <LogoutIcon /> Logout
-                      </MenuItem>
+
                       <Divider />
+                      <MenuItem
+                        onClick={handleLogout}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <LogoutIcon
+                          style={{
+                            color: "black",
+                            fontSize: "15px",
+                            marginRight: "10px",
+                          }}
+                        />{" "}
+                        {/* Adjust margin as needed */}
+                        Logout
+                      </MenuItem>
                     </Menu>
                   </div>
 

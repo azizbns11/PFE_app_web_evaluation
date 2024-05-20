@@ -54,7 +54,7 @@ const ResetPassword = () => {
       console.log("Response data:", response.data); 
       if (response.data && response.data.message) {
         setSuccess(response.data.message);
-        navigate("/login");
+        navigate("/");
       } else {
         setError("Password reset failed");
       }

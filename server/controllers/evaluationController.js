@@ -3,7 +3,8 @@ const User = require('../models/user');
 const sendNotification = require('../utils/Notification');
 const Notification = require('../models/notification');
 const moment = require('moment');
-exports.createEvaluation = async (req, res) => {
+const { getIo } = require("../SocketIo");
+exports. createEvaluation = async (req, res) => {
   try {
     const {
       SupplierName,
@@ -15,12 +16,10 @@ exports.createEvaluation = async (req, res) => {
       Score
     } = req.body;
 
-
     if (!SupplierName || !evaluationDate || !QualityNote || !LogisticNote || !BillingError || !PaymentTerm || !Score) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-  
     const parsedEvaluationDate = new Date(evaluationDate);
 
     const supplier = await User.findOne({ groupName: SupplierName });
@@ -28,14 +27,13 @@ exports.createEvaluation = async (req, res) => {
       return res.status(404).json({ message: 'Supplier not found' });
     }
 
-
     const january2024 = new Date('2024-01-01');
     const currentMonth = new Date();
     if (parsedEvaluationDate < january2024) {
       return res.status(400).json({ message: 'Evaluation cannot be added for months before January 2024' });
     }
 
-   
+    // Check if the previous month's evaluation exists
     if (parsedEvaluationDate.getMonth() !== 0) { // Exclude January 2024
       const previousMonthStart = moment(parsedEvaluationDate).subtract(1, 'months').startOf('month').toDate();
       const previousMonthEnd = moment(parsedEvaluationDate).subtract(1, 'months').endOf('month').toDate();
@@ -45,12 +43,13 @@ exports.createEvaluation = async (req, res) => {
         evaluationDate: { $gte: previousMonthStart, $lte: previousMonthEnd }
       });
 
-      
+  
       if (!previousMonthEvaluation) {
         return res.status(400).json({ message: 'An evaluation for the previous month is required before adding a new evaluation for the current month' });
       }
     }
 
+  
     const evaluation = new Evaluation({
       SupplierName,
       supplierId: supplier._id, 
@@ -63,7 +62,6 @@ exports.createEvaluation = async (req, res) => {
     });
     await evaluation.save();
 
-   
     const notification = new Notification({
       userId: supplier._id,
       message: 'You have a new evaluation',
@@ -71,9 +69,11 @@ exports.createEvaluation = async (req, res) => {
     });
     await notification.save();
 
-  
-    sendNotification(supplier.email, 'New Evaluation Added', 'New Evaluation Added','evaluation');
+ 
+    const io = getIo();
+    io.emit("newEvaluation", { userRole: supplier.role, supplierId: supplier._id });
 
+  
     res.status(201).json(evaluation);
   } catch (error) {
     console.error("Error creating evaluation:", error);
@@ -82,18 +82,19 @@ exports.createEvaluation = async (req, res) => {
 };
 
 
+
 exports.getAllEvaluations = async (req, res) => {
   try {
-    const userId = req.userId; // Assuming you have the user ID extracted from the token
-    const userRole = req.userRole; // Assuming you have the user's role extracted from the token
+    const userId = req.userId; 
+    const userRole = req.userRole; 
 
     let evaluations = [];
 
-    // If the user is a supplier, retrieve only the evaluations associated with their supplier ID
+  
     if (userRole === 'supplier') {
       evaluations = await Evaluation.find({ supplierId: userId });
     } else {
-      // For admin or other roles, retrieve all evaluations
+     
       evaluations = await Evaluation.find();
     }
 
@@ -107,23 +108,23 @@ exports.getAllEvaluations = async (req, res) => {
 
 exports.getSupplierNamesAndScores = async (req, res) => {
   try {
-    const userId = req.userId; // Assuming you have the user ID extracted from the token
-    const userRole = req.userRole; // Assuming you have the user's role extracted from the token
+    const userId = req.userId; 
+    const userRole = req.userRole; 
 
     let evaluations = [];
 
-    // If the user is a supplier, retrieve only the evaluations associated with their supplier ID
+   
     if (userRole === 'supplier') {
       evaluations = await Evaluation.find({ supplierId: userId }, 'SupplierName evaluationDate Score');
     } else {
-      // For admin or other roles, retrieve all evaluations
+   
       evaluations = await Evaluation.find({}, 'SupplierName evaluationDate Score');
     }
 
-    // Aggregate the data based on evaluation date
+
     const aggregatedData = {};
     evaluations.forEach(evaluation => {
-      const date = evaluation.evaluationDate.toISOString().split('T')[0]; // Extract date without time
+      const date = evaluation.evaluationDate.toISOString().split('T')[0]; 
       if (!aggregatedData[date]) {
         aggregatedData[date] = [];
       }
@@ -143,7 +144,7 @@ exports.updateEvaluation = async (req, res) => {
   try {
     const { QualityNote, LogisticNote, BillingError, PaymentTerm, Score } = req.body;
     
-    // Find the evaluation by ID
+
     const updatedEvaluation = await Evaluation.findByIdAndUpdate(
       req.params.id,
       {
@@ -153,7 +154,7 @@ exports.updateEvaluation = async (req, res) => {
         PaymentTerm,
         Score
       },
-      { new: true } // Return the updated document
+      { new: true } 
     );
 
     if (!updatedEvaluation) {

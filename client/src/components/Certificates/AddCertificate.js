@@ -118,10 +118,10 @@ const AddCertificate = ({ isOpen, toggle, updateCertificatesList  }) => {
           },
         }
       );
-      console.log(response.data);
+
       setShowSuccess(true);
       setFormData({
-        SupplierName: "",
+        ...formData, // Keep the SupplierName
         ExpireDate: "",
         RecertificateDate: "",
         CertificateNumber: "",
@@ -129,6 +129,11 @@ const AddCertificate = ({ isOpen, toggle, updateCertificatesList  }) => {
         certificateFile: null,
       });
       updateCertificatesList();
+
+      // Hide the success message after 3 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
     } catch (error) {
       console.error("Error:", error);
     }

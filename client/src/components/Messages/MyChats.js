@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ChatLoading from "./ChatLoading";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
+
+const MyChats = ({ onSelectChat}) => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const { user } = useAuth();
+  const [deleteMenuOpen, setDeleteMenuOpen] = useState(null);
+  const [deleteMenuChatId, setDeleteMenuChatId] = useState(null);
+  const [showLoading, setShowLoading] = useState(true);
+  const ENDPOINT = "http://localhost:8000";
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -19,17 +26,23 @@ const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
           },
         });
         setChats(response.data);
-        // console.log("Chats:", response.data);
+        setTimeout(() => {
+          setShowLoading(false); 
+        }, 100); 
       } catch (error) {
         console.error("Error fetching chats:", error);
       }
     };
-
+  
     fetchChats();
   }, []);
+  
   useEffect(() => {
     //console.log("Chats updated:", chats);
   }, [chats]);
+
+  
+
   const handleChatClick = (chat) => {
     setSelectedChat(chat);
     onSelectChat(chat);
@@ -57,6 +70,21 @@ const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
     }
 
     return "Group Chat";
+  };
+  const handleDeleteChat = async (chatId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:8000/api/chat/${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setChats(chats.filter((chat) => chat._id !== chatId));
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+    setDeleteMenuOpen(null);
+    setDeleteMenuChatId(null);
   };
 
   return (
@@ -116,7 +144,7 @@ const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
                 key={index}
                 sx={{
                   cursor: "pointer",
-                  py: 2,
+                  py: 1,
                   px: 3,
                   borderRadius: "lg",
                   bgcolor: selectedChat === chat ? "#20B2AA" : "transparent",
@@ -129,7 +157,7 @@ const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
               >
                 <Typography>{getDisplayName(chat)}</Typography>
 
-                {chat.latestMessage && (
+                {chat.latestMessage && chat.latestMessage.sender && (
                   <Typography
                     variant="body2"
                     sx={{
@@ -140,10 +168,30 @@ const MyChats = ({ onSelectChat, onNotificationClick, selectedUserName }) => {
                     {chat.latestMessage.content}
                   </Typography>
                 )}
+                <IconButton
+                  onClick={(event) => {
+                    setDeleteMenuOpen(event.currentTarget);
+                    setDeleteMenuChatId(chat._id); // Set the chat ID
+                  }}
+                  sx={{ marginLeft: "350px", marginTop: "-50px" }}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={deleteMenuOpen}
+                  open={Boolean(deleteMenuOpen && deleteMenuChatId === chat._id)} 
+                  onClose={() => {
+                    setDeleteMenuOpen(null);
+                    setDeleteMenuChatId(null);
+                  }}
+                >
+                 <MenuItem onClick={() => handleDeleteChat(chat._id)}>
+                    <DeleteIcon sx={{ mr: 0.5 }} fontSize="small" /> Delete Chat
+                  </MenuItem>
+                </Menu>
               </Box>
             ))}
-
-          {chats.length === 0 && <ChatLoading />}
+ {showLoading && <ChatLoading />}
         </Box>
       </>
     </Box>

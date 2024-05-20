@@ -15,10 +15,11 @@ import {
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+
 const AdminDashboard = (props) => {
   const [topSuppliers, setTopSuppliers] = useState([]);
   const [totalSuppliers, setTotalSuppliers] = useState(0);
-  const [suppliers, setSuppliers] = useState([]); 
+  const [suppliers, setSuppliers] = useState([]);
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -39,15 +40,14 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setTopSuppliers(response.data);
+        setTopSuppliers(response.data); // Assuming response.data contains an array of objects with SupplierName and avgScore properties
       } catch (error) {
         console.error("Error fetching top suppliers:", error);
       }
     };
-  
+
     fetchTopSuppliers();
   }, []);
-  
 
   useEffect(() => {
     const fetchTotalSuppliers = async () => {
@@ -124,7 +124,6 @@ const AdminDashboard = (props) => {
     }
   };
   useEffect(() => {
-
     fetchProtocolStatusData();
   }, []);
   const fetchProtocolStatusData = async () => {
@@ -138,29 +137,24 @@ const AdminDashboard = (props) => {
           },
         }
       );
-  
+
       console.log("Protocol Status Data Response:", response.data);
-  
-   
+
       const statusCounts = response.data.reduce((counts, status) => {
         counts[status] = (counts[status] || 0) + 1;
         return counts;
       }, {});
-  
-   
+
       setProtocolStatusData({
-        validating: statusCounts['is being validated'] || 0,
-        valid: statusCounts['validated'] || 0,
-        invalid: statusCounts['invalid'] || 0,
-        
+        validating: statusCounts["is being validated"] || 0,
+        valid: statusCounts["validated"] || 0,
+        invalid: statusCounts["invalid"] || 0,
       });
-  
     } catch (error) {
       console.error("Error fetching protocol status data:", error);
     }
   };
-  
-  
+
   if (window.Chart) {
     parseOptions(window.Chart, chartOptions());
   }
@@ -170,8 +164,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalSuppliers, 100 - totalSuppliers],
-        backgroundColor: ["#FF6384", "#48D1CC"],
-        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
+        backgroundColor: ["#FFD700", "#00CED1"],
+        hoverBackgroundColor: ["#FFFACD", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
@@ -182,8 +176,8 @@ const AdminDashboard = (props) => {
     datasets: [
       {
         data: [totalEmployees, 100 - totalEmployees],
-        backgroundColor: ["#FF6384", "#48D1CC"],
-        hoverBackgroundColor: ["#FF6384", "#B0E0E6"],
+        backgroundColor: ["#FFD700", "#00CED1"],
+        hoverBackgroundColor: ["#FFFACD", "#B0E0E6"],
         hoverBorderWidth: 10,
       },
     ],
@@ -223,13 +217,15 @@ const AdminDashboard = (props) => {
       labels: topSuppliers.map((supplier) => supplier.SupplierName),
       datasets: [
         {
-          label: "Scores",
-          data: topSuppliers.map((supplier) => supplier.Score),
+          label: "Average Score",
+          data: topSuppliers.map((supplier) => supplier.avgScore),
           maxBarThickness: 10,
         },
       ],
     },
   };
+  
+  
   const chartExample4 = {
     labels: ["Valid", "Invalid", "Being Validated"],
     datasets: [
@@ -267,23 +263,26 @@ const AdminDashboard = (props) => {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+            gridLines: {
+              display: true,
+              color: "rgba(0, 0, 0, 0.1)",
+            },
           },
-          gridLines: {
-            display: true,
-            color: "rgba(0, 0, 0, 0.1)",
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              display: true,
+              color: "rgba(0, 0, 0, 0.1)",
+            },
           },
-        }],
-        xAxes: [{
-          gridLines: {
-            display: true,
-            color: "rgba(0, 0, 0, 0.1)",
-          },
-        }],
+        ],
       },
-  
 
       animation: {
         animateScale: true,
@@ -291,9 +290,7 @@ const AdminDashboard = (props) => {
       },
     },
   };
-  
-  
-  
+
   useEffect(() => {
     fetchCertificates();
   }, []);
@@ -408,11 +405,52 @@ const AdminDashboard = (props) => {
 
     fetchEvaluations();
   }, []);
+
+  const handleExportButtonClick = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:8000/api/export", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob", // Set response type to blob for file download
+      });
+
+      // Create a Blob object from the response data
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Create a temporary URL for the Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary <a> element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "data.xlsx"); // Set the download attribute with desired file name
+      document.body.appendChild(link);
+
+      // Trigger the click event on the link
+      link.click();
+
+      // Cleanup: remove the temporary link and revoke the temporary URL
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting data:", error);
+    }
+  };
+
   return (
     <>
-       <Container className="mt--9" fluid style={{ backgroundColor: "#FFFAFA" }}>
+      <Container className="mt--9" fluid style={{ backgroundColor: "#FFFAFA" }}>
         <Row className="mt-9 ">
           <Col className="mb-5 mb-xl-0 offset-xl-2" xl="4">
+          <div style={{ marginBottom: '20px',marginTop:'20px'}}>
+      <Button color="primary" size="xl" onClick={handleExportButtonClick}>
+        Export Data
+      </Button>
+    </div>
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
@@ -465,20 +503,30 @@ const AdminDashboard = (props) => {
             </Card>
           </Col>
           <Col xl="6">
-          <Card className="shadow">
-            <CardHeader className="bg-transparent">
-              <h6 className="text-uppercase text-muted ls-1 mb-1">Protocols</h6>
-            </CardHeader>
-            <CardBody>
-              <div className="chart">
-                <Bar
-                  data={chartExample4}
-                  options={chartOptions}
-                />
-              </div>
-            </CardBody>
-          </Card>
-        </Col>
+            
+            <Card className="shadow">
+              
+              <CardHeader className="bg-transparent">
+              <Row className="align-items-center">
+                  <div className="col">
+                    <h2 className="mb-0">Protocols</h2>
+                  </div>
+                  <div className="col text-right">
+                    <Link to="/Protocol">
+                      <Button color="primary" size="sm">
+                        See all
+                      </Button>
+                    </Link>
+                  </div>
+                </Row>
+              </CardHeader>
+              <CardBody>
+                <div className="chart">
+                  <Bar data={chartExample4}  />
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
         </Row>
 
         <Row className="mt-4">
@@ -606,7 +654,7 @@ const AdminDashboard = (props) => {
                           <tr key={index}>
                             <td>
                               <img
-                                src={`http://localhost:8000/${supplier.image}`}
+                                src={supplier.image}
                                 alt={`${supplier.groupName} `}
                                 style={{ width: "50px", height: "50px" }}
                               />
@@ -683,9 +731,9 @@ const AdminDashboard = (props) => {
                           return (
                             <td key={index}>
                               {monthHasEvaluation ? (
-                                <i className="fas fa-check text-success"></i> 
+                                <i className="fas fa-check text-success"></i>
                               ) : (
-                                <i className="fas fa-times text-danger"></i> 
+                                <i className="fas fa-times text-danger"></i>
                               )}
                             </td>
                           );

@@ -25,7 +25,8 @@ function EditProfile() {
   const [countries, setCountries] = useState([]);
   const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState("");
-
+  const [image, setImage] = useState(null);
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const mainContent = useRef(null);
   const inputRef = useRef(null);
@@ -61,9 +62,9 @@ function EditProfile() {
           console.error("User ID is undefined");
           return;
         }
-  
+
         const token = localStorage.getItem("token");
-  
+
         const response = await axios.get(
           `http://localhost:8000/profile/fetch/${user.id}`,
           {
@@ -73,22 +74,21 @@ function EditProfile() {
           }
         );
         const { data } = response;
-  
+
         console.log("Fetched country:", data.country);
-  
+
         setFormData(data);
-  
+
         setSelectedCountry(data.country);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
-  
+
     if (user.id) {
       fetchUserData();
     }
   }, [user.id]);
-  
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -112,14 +112,22 @@ function EditProfile() {
   };
 
   const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption.value); 
+    const selectedCountry = countries.find(
+      (country) => country.value === selectedOption.value
+    );
+    setSelectedCountry(selectedCountry); 
+    setFormData({ ...formData, country: selectedCountry.label });
   };
+  
+  const handleImageChange = (event) => {
+    const selectedImage = event.target.files[0];
+    setImageFile(selectedImage); 
+    setPreviewImage(URL.createObjectURL(selectedImage));
+    setShowImageUpload(true);
+  };
+  
+  
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setPreviewImage(URL.createObjectURL(file));
-    setImageFile(file);
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -465,7 +473,7 @@ function EditProfile() {
                               <Col sm="4">
                                 <FormGroup>
                                   <label htmlFor="input-codeTVA">
-                                    code TVA
+                                    Code TVA
                                     <span style={{ color: "red" }}> *</span>
                                   </label>
                                   <Input
@@ -493,6 +501,19 @@ function EditProfile() {
                                     onChange={handleChange}
                                     placeholder="province"
                                     required
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col sm="4">
+                                <FormGroup>
+                                  <label htmlFor="input-street">Street</label>
+                                  <Input
+                                    type="text"
+                                    id="input-street"
+                                    name="street"
+                                    value={formData.street}
+                                    onChange={handleChange}
+                                    placeholder="street"
                                   />
                                 </FormGroup>
                               </Col>
@@ -549,10 +570,7 @@ function EditProfile() {
                               </Col>
                               <Col sm="4">
                                 <FormGroup>
-                                  <label htmlFor="input-fax">
-                                    Fax
-                                    <span style={{ color: "red" }}> *</span>
-                                  </label>
+                                  <label htmlFor="input-fax">Fax</label>
                                   <Input
                                     type="text"
                                     id="input-fax"
@@ -560,7 +578,6 @@ function EditProfile() {
                                     value={formData.fax}
                                     onChange={handleChange}
                                     placeholder="fax"
-                                    required
                                   />
                                 </FormGroup>
                               </Col>
@@ -585,7 +602,6 @@ function EditProfile() {
                                 <FormGroup>
                                   <label htmlFor="input-zipCode">
                                     Code ZIP
-                                    <span style={{ color: "red" }}> *</span>
                                   </label>
                                   <Input
                                     type="text"
@@ -594,7 +610,6 @@ function EditProfile() {
                                     value={formData.zipCode}
                                     onChange={handleChange}
                                     placeholder="zipCode"
-                                    required
                                   />
                                 </FormGroup>
                               </Col>
@@ -603,7 +618,7 @@ function EditProfile() {
                                   <label htmlFor="input-country">Country</label>
                                   <Select
                                     options={countries}
-                                    value={selectedCountry} 
+                                    value={selectedCountry}
                                     onChange={handleCountryChange}
                                     placeholder="Select Country"
                                   />
@@ -663,7 +678,7 @@ function EditProfile() {
                                   />
                                 ) : formData.image ? (
                                   <img
-                                    src={`http://localhost:8000/${formData.image}`}
+                                    src={formData.image}
                                     alt="Profile"
                                     className="profile-image"
                                     style={{
@@ -711,7 +726,10 @@ function EditProfile() {
                                 <input
                                   type="file"
                                   ref={inputRef}
-                                  onChange={(event) => handleImageChange(event)}
+                                  onChange={(event) => {
+                                    handleImageChange(event);
+                                    setShowImageUpload(true);
+                                  }}
                                   style={{ display: "none" }}
                                 />
                               </div>

@@ -21,12 +21,14 @@ const supplierController = {
       if (!supplier) {
         return res.status(404).json({ message: "Supplier not found" });
       }
-      res.json(supplier);
+      const supplierId = supplier._id; 
+      res.json({ supplier, supplierId });
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ message: "Server Error" });
     }
   },
+  
 
   updateSupplierById: async (req, res) => {
     try {
@@ -115,6 +117,10 @@ const supplierController = {
       const deleteEvaluationsResult = await Evaluation.deleteMany({ supplierId: supplierId });
   
       console.log("Deleted evaluations:", deleteEvaluationsResult);
+
+      const deleteProtocolResult = await Protocol.deleteMany({ supplierId: supplierId });
+  
+      console.log("Deleted protocols:", deleteProtocolResult);
   
       res.json({
         message: "Supplier, certificates, and evaluations deleted successfully",
