@@ -71,5 +71,18 @@ const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
 initSocket(server);
+
+
+// Test schedule notification
+/*const {
+  checkEvaluationsForNotification,
+  checkCertificatesForNotification
+} = require('../server/services/notificationService');
+
+// Manually trigger evaluation notification check
+checkEvaluationsForNotification();
+
+// Manually trigger certificate expiration check
+checkCertificatesForNotification();*/
+

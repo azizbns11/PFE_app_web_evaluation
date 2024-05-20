@@ -122,8 +122,8 @@ const checkCertificatesForNotification = async () => {
 };
 
 
-cron.schedule("12 20 17 * *", checkEvaluationsForNotification); // min hour day
-cron.schedule("28 20 * * *", checkCertificatesForNotification); 
+cron.schedule("53 09 19 * *", checkEvaluationsForNotification); // min hour day
+cron.schedule("19 09 * * *", checkCertificatesForNotification); 
 
 module.exports = {
   checkEvaluationsForNotification,

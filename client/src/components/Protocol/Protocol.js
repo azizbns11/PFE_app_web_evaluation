@@ -252,17 +252,16 @@ const Protocol = () => {
               >
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Supplier Name</th>
-                      <th scope="col">Protocol Title</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">File</th>
-                      {(user.role === "admin" || user.role === "employee") && (
-                        <>
-                          <th scope="col">Actions</th>
-                        </>
-                      )}
-                    </tr>
+                  <tr>
+  <th scope="col" style={{ fontWeight: "bold" }}>Supplier Name</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Protocol Title</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Status</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>File</th>
+  {(user.role === "admin" || user.role === "employee") && (
+    <th scope="col" style={{ fontWeight: "bold" }}>Actions</th>
+  )}
+</tr>
+
                   </thead>
                   <tbody>
                     {filteredProtocols.map((protocol) => (

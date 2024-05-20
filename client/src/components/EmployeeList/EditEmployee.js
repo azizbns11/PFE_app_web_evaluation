@@ -14,7 +14,7 @@ import {
   Input
 } from "reactstrap";
 
-function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInList }) {
+const EditEmployee=({ isOpen, toggle, employee, employeeId, updateEmployeeInList }) =>{
   const [showSuccess, setShowSuccess] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editedFormData, setEditedFormData] = useState({
@@ -59,15 +59,16 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
         }
       );
   
-      const updatedEmployee = response.data;
-      updateEmployeeInList(updatedEmployee);
-      toggle();
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    } catch (error) {
-      console.error("Error saving changes:", error);
-    }
-  };
+      const updatedEmployee = response.data.employee; // Extracting employee data
+    console.log("Updated employee data:", updatedEmployee);
+    updateEmployeeInList(updatedEmployee);
+    toggle();
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  } catch (error) {
+    console.error("Error saving changes:", error);
+  }
+};
   
   if (!employee) return null;
   return (

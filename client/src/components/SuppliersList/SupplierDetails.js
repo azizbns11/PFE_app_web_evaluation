@@ -20,7 +20,6 @@ const SupplierDetails = ({
   supplier,
   supplierId,
   updateSupplierInList,
-  updateEvaluationsList,
 }) => {
   const [editing, setEditing] = useState(false);
   const [editedFormData, setEditedFormData] = useState({

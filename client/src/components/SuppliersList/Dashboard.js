@@ -395,6 +395,7 @@ const SupplierDashboard = () => {
                         className="card-stats mb-4 mb-xl-0"
                         style={{ backgroundColor: "#0d73e1", boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.5)" }}
                       >
+                        
                         <CardBody>
                           <Row>
                             <div className="col">
@@ -541,6 +542,17 @@ const SupplierDashboard = () => {
         <Row className="mt-7">
           <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
             <Card className="shadow" >
+            <CardHeader
+                className="bg-transparent"
+                style={{ boxShadow: "0px 5px 4px rgba(0, 0, 0, 0.15)" }}
+              >
+                <Row className="align-items-center">
+                <h6 className="text-uppercase text-muted ls-1 mb-1">
+                  Evaluations
+                </h6>
+                  
+                </Row>
+              </CardHeader>
               <CardBody style={{ boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.5)"}}>
                 {loading ? (
                   <p>Loading...</p>
@@ -672,11 +684,18 @@ const SupplierDashboard = () => {
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0 offset-xl-2" xl="7">
             <Card className="shadow">
-              <CardHeader className="bg-transparent" >
+            <CardHeader
+                className="bg-transparent"
+                style={{ boxShadow: "0px 5px 4px rgba(0, 0, 0, 0.15)" }}
+              >
+                <Row className="align-items-center">
                 <h6 className="text-uppercase text-muted ls-1 mb-1">
                   Protocols
                 </h6>
+                  
+                </Row>
               </CardHeader>
+              
               <CardBody style={{ boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.5)"}}>
                 <div className="chart">
                   <Bar data={chartExample4} options={chartOptions} />

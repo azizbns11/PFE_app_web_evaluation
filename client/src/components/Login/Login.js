@@ -124,7 +124,7 @@ function Login() {
    
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
-            <Col lg="5" md="7">
+            <Col lg="6" md="7">
               <Card className="bg-secondary shadow border-0">
                 <CardBody className="px-lg-5 py-lg-5">
                   <div className="text-center mb-4">

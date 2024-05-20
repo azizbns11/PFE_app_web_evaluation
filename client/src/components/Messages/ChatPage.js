@@ -74,7 +74,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       setToken(storedToken);
     }
   }, []);
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -97,7 +97,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
           }
         );
 
-     
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -190,20 +189,20 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       console.log("Response data:", response.data);
-  
+
       const filteredUsers = response.data.filter((searchUser) => {
         // Exclude the current user
         if (searchUser._id === user.id) {
           return false;
         }
-  
+
         // If the current user is a supplier, exclude other suppliers
         if (user.role === "supplier" && searchUser.role === "supplier") {
           return false;
         }
-  
+
         if (
           searchUser.role === "admin" ||
           searchUser.role === "employee" ||
@@ -211,16 +210,20 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
         ) {
           if (searchUser.role === "admin" || searchUser.role === "employee") {
             return (
-              searchUser.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+              searchUser.firstName
+                ?.toLowerCase()
+                .includes(search.toLowerCase()) ||
               searchUser.lastName?.toLowerCase().includes(search.toLowerCase())
             );
           } else if (searchUser.role === "supplier") {
-            return searchUser.groupName?.toLowerCase().includes(search.toLowerCase());
+            return searchUser.groupName
+              ?.toLowerCase()
+              .includes(search.toLowerCase());
           }
         }
         return false;
       });
-  
+
       setSearchResult(filteredUsers);
     } catch (error) {
       console.error("Error searching users:", error);
@@ -228,8 +231,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       setLoading(false);
     }
   };
-  
-  
 
   const handleFunction = async (userId) => {
     try {
@@ -248,7 +249,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
         selectedUserName = `${selectedUser.firstName} ${selectedUser.lastName}`;
       }
 
-
       setSelectedUser(selectedUser);
       setSelectedUserName(selectedUserName);
 
@@ -260,7 +260,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
         setSelectedChat(existingChat);
         setDrawerOpen(false);
       } else {
-       
         const createdChat = await createChat(userId, handleClose);
         //  console.log("Chat created:", createdChat);
 
@@ -398,7 +397,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
       redirectionURL = "/";
   }
   return (
-    
     <ChatContext.Provider
       value={{
         selectedChat,
@@ -518,10 +516,7 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
               aria-expanded={anchorEl ? "true" : undefined}
               style={{ backgroundColor: "white" }}
             >
-              <Avatar
-                src={userData.image}
-                alt={user.name}
-              />
+              <Avatar src={userData.image} alt={user.name} />
             </IconButton>
             <Menu
               id="user-menu"
@@ -557,13 +552,33 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClick={handleProfileClick}>
-                <Avatar /> Profile
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon /> Logout
+              <MenuItem
+                onClick={handleProfileClick}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <i
+                  className="fa fa-user"
+                  aria-hidden="true"
+                  style={{ marginRight: "10px" }}
+                ></i>{" "}
+                {/* Adjust margin as needed */}
+                Profile
               </MenuItem>
               <Divider />
+              <MenuItem
+                onClick={handleLogout}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <LogoutIcon
+                  style={{
+                    color: "black",
+                    fontSize: "15px",
+                    marginRight: "10px",
+                  }}
+                />{" "}
+                {/* Adjust margin as needed */}
+                Logout
+              </MenuItem>
             </Menu>
           </div>
         </Box>
@@ -644,7 +659,6 @@ const ChatPage = ({ isOpen, onClose, onSelectChat }) => {
             </Grid>
           </Grid>
         </Container>
-   
       </div>
     </ChatContext.Provider>
   );

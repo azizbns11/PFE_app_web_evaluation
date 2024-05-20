@@ -283,21 +283,22 @@ const Evaluations = () => {
             <div style={{ overflowY: "auto", maxHeight: "400px" }}>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Supplier Name</th>
-                    {generateColumnHeaders().map((header, index) => (
-                      <th
-                        key={index}
-                        scope="col"
-                        style={{ paddingRight: "0.1px" }}
-                      >
-                        {header}
-                      </th>
-                    ))}
-                    <th scope="col">
-                      <strong>Total</strong>
-                    </th>
-                  </tr>
+                <tr>
+  <th scope="col" style={{ fontWeight: "bold" }}>Supplier Name</th>
+  {generateColumnHeaders().map((header, index) => (
+    <th
+      key={index}
+      scope="col"
+      style={{ fontWeight: "bold", paddingRight: "0.1px" }}
+    >
+      {header}
+    </th>
+  ))}
+  <th scope="col" style={{ fontWeight: "bold" }}>
+    <strong>Total</strong>
+  </th>
+</tr>
+
                 </thead>
                 <tbody>
                   {suppliers.map((supplier, index) => (

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { NavLink as Link,useLocation } from "react-router-dom";
+import { NavLink as Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
+import NewReleasesOutlinedIcon from "@mui/icons-material/NewReleasesOutlined";
 import { useMediaQuery } from "@mui/material";
-import PlusOneOutlinedIcon from '@mui/icons-material/PlusOneOutlined';
+import PlusOneOutlinedIcon from "@mui/icons-material/PlusOneOutlined";
 import {
   Navbar,
   NavItem,
@@ -40,7 +40,12 @@ const Sidebar = (props) => {
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
-
+  const handleActiveLink = (path) => {
+    if (location.pathname === path) {
+      return { fontWeight: "bold", color: "black" }; // Bold and black for active link
+    }
+    return { color: "black" }; // Just black for inactive links
+  };
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -86,7 +91,6 @@ const Sidebar = (props) => {
   const isSmallScreen = useMediaQuery("(max-width:770px)");
   let navbarBrandProps;
   if (logo && logo.innerLink) {
-  
     let redirectionURL;
     switch (user.role) {
       case "admin":
@@ -114,7 +118,7 @@ const Sidebar = (props) => {
   }
   const shouldHideSidebar = location.pathname === "/Messages";
   if (shouldHideSidebar) {
-    return null; 
+    return null;
   }
   return (
     <Navbar
@@ -123,7 +127,7 @@ const Sidebar = (props) => {
       id="sidenav-main"
       style={{ zIndex: 1000 }}
     >
-      <Container fluid >
+      <Container fluid>
         <button
           className="navbar-toggler"
           type="button"
@@ -140,47 +144,47 @@ const Sidebar = (props) => {
             />
           </NavbarBrand>
         ) : null}
-           {!isSmallScreen && (
-        <Nav className="align-items-center d-md-none">
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav>
-              {userData.image ? (
-                <img
-                  src={`http://localhost:8000/${userData.image}`}
-                  alt="Avatar"
-                  style={{
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    marginRight: "10px",
-                  }}
-                />
-              ) : (
-                <img
-                  src={require("../../assets/img/brand/user.png")}
-                  alt="Default Avatar"
-                  style={{
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    marginRight: "10px",
-                  }}
-                />
-              )}
-              <span className="ml-2">{userData.userName}</span>
-            </DropdownToggle>
-            <DropdownMenu className="dropdown-menu-arrow" right>
-              <DropdownItem to="/profile" tag={Link}>
-                My Profile
-              </DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem to="/logout" tag={Link}>
-                Logout
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </Nav>
-          )}
+        {!isSmallScreen && (
+          <Nav className="align-items-center d-md-none">
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav>
+                {userData.image ? (
+                  <img
+                    src={`http://localhost:8000/${userData.image}`}
+                    alt="Avatar"
+                    style={{
+                      borderRadius: "50%",
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={require("../../assets/img/brand/user.png")}
+                    alt="Default Avatar"
+                    style={{
+                      borderRadius: "50%",
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                    }}
+                  />
+                )}
+                <span className="ml-2">{userData.userName}</span>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-arrow" right>
+                <DropdownItem to="/profile" tag={Link}>
+                  My Profile
+                </DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem to="/logout" tag={Link}>
+                  Logout
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </Nav>
+        )}
         <Collapse navbar isOpen={collapseOpen}>
           <div className="navbar-collapse-header d-md-none">
             <Row>
@@ -229,7 +233,7 @@ const Sidebar = (props) => {
             {(user.role === "employee" ||
               user.role === "supplier" ||
               user.role === "admin") && (
-              <NavItem>
+                <NavItem>
                 <NavLink
                   to={
                     user.role === "employee"
@@ -240,10 +244,11 @@ const Sidebar = (props) => {
                   }
                   tag={Link}
                   className="nav-link"
+                  style={handleActiveLink("/admin/dashboard")} // Apply styles based on active link
                 >
                   <i
                     className="fa fa-line-chart text-primary"
-                    aria-hidden="true" 
+                    aria-hidden="true"
                     style={{ fontSize: "18px" }}
                   ></i>
                   Dashboard
@@ -257,6 +262,7 @@ const Sidebar = (props) => {
                     to="/admin/suppliers"
                     tag={Link}
                     className="nav-link"
+                    style={handleActiveLink("/admin/suppliers")}
                   >
                     <i
                       className="fa fa-truck text-danger"
@@ -266,25 +272,30 @@ const Sidebar = (props) => {
                     Suppliers
                   </NavLink>
                 </NavItem>
+
                 <NavItem>
                   <NavLink
                     to="/admin/employees"
                     tag={Link}
                     className="nav-link"
+                    style={handleActiveLink("/admin/employees")}
                   >
                     <i
                       className="fa fa-briefcase"
                       aria-hidden="true"
-                      style={{ color: "#A0522D",fontSize: "18px"  }}
+                      style={{ color: "#A0522D", fontSize: "18px" }}
                     ></i>
                     Employees
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink to="/admin/adduser" tag={Link} className="nav-link">
-                  <i className="fa-solid fa-user-plus"  aria-hidden="true"
-                      style={{ color: "#DA70D6",fontSize: "18px"  }}></i>
-                    
+                  <NavLink to="/admin/adduser" tag={Link} className="nav-link"   style={handleActiveLink("/admin/adduser")}>
+                    <i
+                      className="fa-solid fa-user-plus"
+                      aria-hidden="true"
+                      style={{ color: "#DA70D6", fontSize: "18px" }}
+                      
+                    ></i>
                     Add User
                   </NavLink>
                 </NavItem>
@@ -292,54 +303,59 @@ const Sidebar = (props) => {
             ) : null}
 
             <NavItem>
-              <NavLink to="/admin/evaluations" tag={Link} className="nav-link">
+              <NavLink to="/admin/evaluations" tag={Link} className="nav-link"   style={handleActiveLink("/admin/evaluations")}>
                 <i
                   className="fa fa-star"
                   aria-hidden="true"
-                  style={{ color: "#FFD700",fontSize: "18px"  }}
+                  style={{ color: "#FFD700", fontSize: "18px" }}
                 ></i>
                 Evaluations
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/admin/certificates" tag={Link} className="nav-link">
+              <NavLink to="/admin/certificates" tag={Link} className="nav-link"   style={handleActiveLink("/admin/certificates")}>
                 <i
                   className="fa fa-trophy text-info"
                   aria-hidden="true"
-                  style={{ color: "#FFD700" ,fontSize: "18px" }}
+                  style={{ color: "#FFD700", fontSize: "18px" }}
                 ></i>
                 Certificates
               </NavLink>
             </NavItem>
 
             <NavItem>
-              <NavLink to="/Protocol" tag={Link} className="nav-link">
+              <NavLink to="/Protocol" tag={Link} className="nav-link"   style={handleActiveLink("/Protocol")}>
                 <i
                   className="fa fa-flag"
                   aria-hidden="true"
-                  style={{ color: "#FFA07A" ,fontSize: "18px" }}
+                  style={{ color: "#FFA07A", fontSize: "18px" }}
                 ></i>
                 Protocol Status
               </NavLink>
             </NavItem>
             <NavItem>
-  <NavLink to="/Messages" tag={Link} className="nav-link">
-    <i
-      className="fa fa-comments"
-      aria-hidden="true"
-      style={{ color: "#3CB371", fontSize: "18px" }}
-    ></i>
-    Messages 
-    <PlusOneOutlinedIcon style={{ marginLeft: "40px", color: "red" }} />
-  </NavLink>
-</NavItem>
+              <NavLink to="/Messages" tag={Link} className="nav-link"   style={handleActiveLink("/admin/Messages")}>
+                <i
+                  className="fa fa-comments"
+                  aria-hidden="true"
+                  style={{ color: "#3CB371", fontSize: "18px" }}
+                ></i>
+                Messages
+                <PlusOneOutlinedIcon
+                  style={{ marginLeft: "40px", color: "red" }}
+                />
+              </NavLink>
+            </NavItem>
           </Nav>
-     
         </Collapse>
         <Nav navbar className="mt-auto">
           <NavItem>
-            <NavLink to="/profile" tag={Link} className="nav-link">
-              <i className="fa fa-user-circle" aria-hidden="true" style={{ fontSize: "24px" }}></i>
+            <NavLink to="/profile" tag={Link} className="nav-link"  style={handleActiveLink("/profil")}>
+              <i
+                className="fa fa-user-circle"
+                aria-hidden="true"
+                style={{ fontSize: "24px" }}
+              ></i>
               Profile
             </NavLink>
           </NavItem>

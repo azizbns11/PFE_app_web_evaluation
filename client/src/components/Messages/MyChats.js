@@ -5,7 +5,7 @@ import { Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from '@mui/icons-material/Delete';
-import io from "socket.io-client";
+
 
 const MyChats = ({ onSelectChat}) => {
   const [chats, setChats] = useState([]);

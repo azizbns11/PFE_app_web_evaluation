@@ -194,15 +194,16 @@ const Certificates = () => {
                 <div style={{ overflowY: "auto", maxHeight: "400px", boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.3)"}}>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Supplier</th>
-                      <th scope="col">Certificate Name</th>
-                      <th scope="col">Certificate Number</th>
-                      <th scope="col">Expire date</th>
-                      <th scope="col">Recertifcate date</th>
-                      <th scope="col">File</th>
-                      <th scope="col">Actions</th>
-                    </tr>
+                  <tr>
+  <th scope="col" style={{ fontWeight: "bold" }}>Supplier</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Certificate Name</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Certificate Number</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Expire date</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Recertifcate date</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>File</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Actions</th>
+</tr>
+
                   </thead>
                   <tbody>
                     {filteredCertificates.map((certificate) => (

@@ -81,12 +81,19 @@ const Employees = () => {
   };
 
   const updateEmployeeInList = (updatedEmployee) => {
+    console.log("Updating employee in list:", updatedEmployee);
     setEmployees((prevEmployees) =>
       prevEmployees.map((employee) =>
         employee._id === updatedEmployee._id ? updatedEmployee : employee
       )
     );
+    setFilteredEmployees((prevFilteredEmployees) =>
+      prevFilteredEmployees.map((employee) =>
+        employee._id === updatedEmployee._id ? updatedEmployee : employee
+      )
+    );
   };
+  
 
   const toggleDeleteConfirmation = () => setDeleteConfirmationOpen(!deleteConfirmationOpen);
 
@@ -122,16 +129,17 @@ const Employees = () => {
             <div style={{ overflowY: "auto", maxHeight: "400px", boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.3)" }}>
             <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
-                <tr>
-                  <th scope="col">Image</th>
-                  <th scope="col">First Name</th>
-                  <th scope="col">Last Name</th>
-                  <th scope="col">Position</th>
-                  <th scope="col">Email</th>
-                  {(user.role !== "employee") && (
-                        <th scope="col">Actions</th>
-                      )}
-                </tr>
+              <tr>
+  <th scope="col" style={{ fontWeight: "bold" }}>Image</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>First Name</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Last Name</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Position</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Email</th>
+  {(user.role !== "employee") && (
+    <th scope="col" style={{ fontWeight: "bold" }}>Actions</th>
+  )}
+</tr>
+
               </thead>
               <tbody>
                 {loading ? (
