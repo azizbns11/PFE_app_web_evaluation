@@ -203,6 +203,7 @@ function chartOptions() {
             borderColor: mode === "dark" ? colors.gray[800] : colors.white,
             borderWidth: 4,
           },
+         
         },
         tooltips: {
           enabled: true,
@@ -234,19 +235,11 @@ function chartOptions() {
     },
   };
 
-  // yAxes
+  // Update yAxes and xAxes defaults
   Chart.scaleService.updateScaleDefaults("linear", {
     gridLines: {
-      borderDash: [2],
-      borderDashOffset: [2],
       color: mode === "dark" ? colors.gray[900] : colors.gray[300],
-      drawBorder: false,
-      drawTicks: false,
-      lineWidth: 0,
-      zeroLineWidth: 0,
       zeroLineColor: mode === "dark" ? colors.gray[900] : colors.gray[300],
-      zeroLineBorderDash: [2],
-      zeroLineBorderDashOffset: [2],
     },
     ticks: {
       beginAtZero: true,
@@ -259,12 +252,9 @@ function chartOptions() {
     },
   });
 
-  // xAxes
   Chart.scaleService.updateScaleDefaults("category", {
     gridLines: {
-      drawBorder: false,
-      drawOnChartArea: false,
-      drawTicks: false,
+      display: false, // Hide grid lines for category scale
     },
     ticks: {
       padding: 20,
@@ -273,6 +263,9 @@ function chartOptions() {
 
   return options;
 }
+
+
+
 
 // Parse global options
 function parseOptions(parent, options) {
@@ -285,7 +278,7 @@ function parseOptions(parent, options) {
   }
 }
 
-// Example 1 of Chart inside src/views/Index.js (Sales value - Card)
+
 let chartExample1 = {
   options: {
     scales: {
@@ -346,16 +339,18 @@ let chartExample1 = {
   },
 };
 
-// Example 2 of Chart inside src/views/Index.js (Total orders - Card)
+
 let chartExample2 = {
   options: {
     scales: {
       yAxes: [
         {
+          gridLines: {
+            color: "rgba(0, 0, 0, 0.1)", // Define the color of the grid lines
+          },
           ticks: {
             callback: function (value) {
               if (!(value % 10)) {
-                //return '$' + value + 'k'
                 return value;
               }
             },

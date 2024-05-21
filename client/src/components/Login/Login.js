@@ -23,7 +23,7 @@ function Login() {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
-  const [rememberMe, setRememberMe] = useState(false); 
+  
   const mainContent = useRef(null);
   const { updateUserRole } = useAuth();
 
@@ -52,9 +52,7 @@ function Login() {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleRememberMeChange = (e) => {
-    setRememberMe(e.target.checked);
-  };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,12 +72,7 @@ function Login() {
       localStorage.setItem("token", token);
       updateUserRole(role);
   
-      if (rememberMe) {
-        localStorage.setItem("rememberedEmail", credentials.email);
-      } else {
-        localStorage.removeItem("rememberedEmail");
-      }
-  
+      
       if (completedInfo) {
         if (role === "admin") {
           navigate("/admin/dashboard");
@@ -175,21 +168,7 @@ function Login() {
                       </InputGroup>
                     </FormGroup>
                     {error && <Alert color="danger">{error}</Alert>} 
-                    <div className="custom-control custom-control-alternative custom-checkbox">
-                      <input
-                        className="custom-control-input"
-                        id="customCheckLogin"
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={handleRememberMeChange}
-                      />
-                      <label
-                        className="custom-control-label"
-                        htmlFor="customCheckLogin"
-                      >
-                        <span className="text-muted">Remember me</span>
-                      </label>
-                    </div>
+                  
                     <div className="text-center">
                       <Button className="my-4" color="primary" type="submit">
                         {" "}

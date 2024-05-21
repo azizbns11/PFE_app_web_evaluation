@@ -18,6 +18,7 @@ import {
 
 const AddProtocol = ({ isOpen, toggle , updateProtocolsList}) => {
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     supplierName: "",
     status: "is being validated",
@@ -61,6 +62,7 @@ const AddProtocol = ({ isOpen, toggle , updateProtocolsList}) => {
     e.preventDefault();
   
     try {
+      setLoading(true);
       const formDataToSend = new FormData();
       formDataToSend.append("supplierName", formData.supplierName);
       formDataToSend.append("status", formData.status);
@@ -81,18 +83,28 @@ const AddProtocol = ({ isOpen, toggle , updateProtocolsList}) => {
   
       setProtocols([...protocols, response.data]);
   
-  
       setShowSuccess(true);
-  
+
       setFormData({
+        supplierName: currentUser.groupName,
         status: "is being validated",
+        protocolTitle: "",
         file: null,
       });
+  
+    
       updateProtocolsList();
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false); 
     }
   };
+  
   
 
   return (
@@ -167,8 +179,8 @@ const AddProtocol = ({ isOpen, toggle , updateProtocolsList}) => {
                 </FormGroup>
               </Col>
             </Row>
-            <Button type="submit" className="btn btn-primary">
-              Submit
+            <Button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
             </Button>
           </Form>
         </Container>

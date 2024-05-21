@@ -94,13 +94,10 @@ const AdminProfile = () => {
   const handleImageChange = (event) => {
     const selectedImage = event.target.files[0];
     setImage(selectedImage);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewImage(reader.result);
-    };
-    reader.readAsDataURL(selectedImage);
+    setPreviewImage(URL.createObjectURL(selectedImage));
+    setShowImageUpload(true);
   };
+
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -164,7 +161,6 @@ const AdminProfile = () => {
         setShowSuccess(false);
       }, 1000);
 
-     
       setEditMode(false);
       setShowImageUpload(false);
     } catch (error) {
@@ -277,9 +273,7 @@ const AdminProfile = () => {
                                   </Col>
                                   <Col lg="6">
                                     <FormGroup>
-                                      <label htmlFor="input-phone">
-                                        Phone
-                                      </label>
+                                      <label htmlFor="input-phone">Phone</label>
                                       <Input
                                         type="text"
                                         id="input-phone"
@@ -534,13 +528,13 @@ const AdminProfile = () => {
                     <div>
                       <img
                         src={
-                          previewImage ||
-                          `http://localhost:8000/${userData.image}`
+                          previewImage || userData.image 
                         }
                         alt="Profile"
                         className="rounded-circle img-fluid"
                         style={{ width: "150px", height: "150px" }}
                       />
+
                       {editMode && (
                         <>
                           <Button

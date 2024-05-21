@@ -1,46 +1,50 @@
+
+
+
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const multer = require("multer");
+const multer = require("multer"); 
 const path = require("path");
 const defaultImagePath = "uploads/1713021632381.png";
+const cloudinary = require("../utils/cloudinary");
+const multerMiddleware = require("../middleware/Multer");
+const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads"); 
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-
-const upload = multer({ storage: storage }).single("image");
 
 const profileController = {
  
   updateProfile: async (req, res) => {
-   
-    upload(req, res, async (err) => {
+    multerMiddleware(req, res, async (err) => {
       if (err) {
         console.error("Error uploading image:", err);
         return res.status(500).json({ message: "Error uploading image" });
       }
 
-    
-      const imagePath = req.file ? req.file.path :  defaultImagePath; ;
-
-      const userId = req.params.id; 
-      const updatedProfileData = req.body; 
+      const imagePath = req.file ? req.file.path : defaultImagePath;
 
       try {
+      
+        const result = await cloudinary.uploader.upload(imagePath);
+
+      
+        if (req.file) {
+          fs.unlinkSync(imagePath);
+        }
+
+       
+        const imageUrl = result.secure_url;
+
    
+        const userId = req.params.id;
+        const updatedProfileData = req.body;
+
         const user = await User.findById(userId);
 
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
 
-   
+  
         switch (user.role) {
           case "admin":
           case "employee":
@@ -65,23 +69,17 @@ const profileController = {
             break;
         }
 
-      
+  
         if (updatedProfileData.newPassword) {
-     
-          const saltRounds = 10; 
-          const hashedPassword = await bcrypt.hash(
-            updatedProfileData.newPassword,
-            saltRounds
-          );
+          const saltRounds = 10;
+          const hashedPassword = await bcrypt.hash(updatedProfileData.newPassword, saltRounds);
           user.password = hashedPassword;
         }
 
-       
-        if (imagePath) {
-          user.image = imagePath;
-        }
+    
+        user.image = imageUrl;
 
-       
+    
         await user.save();
 
         res.status(200).json({ message: "Profile updated successfully", user });
@@ -144,7 +142,7 @@ getAllUsers: async (req, res) => {
    
     const usersWithImageURLs = users.map(user => ({
       ...user.toJSON(),
-      image: `${req.protocol}://${req.get('host')}/${user.image}` 
+      image: `${user.image}` 
     }));
     res.json(usersWithImageURLs);
   } catch (error) {

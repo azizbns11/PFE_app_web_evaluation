@@ -194,15 +194,16 @@ const Certificates = () => {
                 <div style={{ overflowY: "auto", maxHeight: "400px", boxShadow:"0px 5px 4px rgba(0, 0, 0, 0.3)"}}>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Supplier</th>
-                      <th scope="col">Certificate Name</th>
-                      <th scope="col">Certificate Number</th>
-                      <th scope="col">Expire date</th>
-                      <th scope="col">Recertifcate date</th>
-                      <th scope="col">File</th>
-                      <th scope="col">Actions</th>
-                    </tr>
+                  <tr>
+  <th scope="col" style={{ fontWeight: "bold" }}>Supplier</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Certificate Name</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Certificate Number</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Expire date</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Recertifcate date</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>File</th>
+  <th scope="col" style={{ fontWeight: "bold" }}>Actions</th>
+</tr>
+
                   </thead>
                   <tbody>
                     {filteredCertificates.map((certificate) => (
@@ -268,12 +269,12 @@ const Certificates = () => {
             toggle={toggleEditModal}
             certificate={selectedCertificate}
             certificateId={selectedCertificate ? selectedCertificate._id : null}
-            updateCertificateInList={updateCertificateInList}
+            updateCertificatesList={updateCertificatesList}
           />
           <Modal isOpen={deleteConfirmationOpen} toggle={toggleDeleteConfirmation}>
         <ModalHeader toggle={toggleDeleteConfirmation}>Delete Confirmation</ModalHeader>
         <ModalBody>
-          Are you sure you want to delete the certificate {certificateToDelete && certificateToDelete.groupName}?
+          Are you sure you want to delete the certificate {certificateToDelete && certificateToDelete.CertificateName}?
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => handleDelete(certificateToDelete._id)}>

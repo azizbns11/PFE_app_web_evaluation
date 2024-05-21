@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Notification = require("../models/notification");
 const multer = require("multer");
 const path = require("path");
-
+const { getIo } = require("../SocketIo");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "file/");
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const certificateController = {
- addCertificate : async (req, res) => {
+  addCertificate: async (req, res) => {
     try {
       upload.single("certificateFile")(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
@@ -26,7 +26,7 @@ const certificateController = {
           console.error(err);
           return res.status(500).json({ message: "Server Error" });
         }
-  
+
         try {
           const {
             SupplierName,
@@ -40,20 +40,51 @@ const certificateController = {
           if (!supplier) {
             return res.status(404).json({ message: "Supplier not found" });
           }
-          const userRole = req.userRole;
-         
-  
+
+          let userRole = req.userRole;
+
           let notificationMessage = "";
-  
-        
+
           if (userRole === "supplier") {
-          
-            notificationMessage = `You have a new certificate: ${CertificateName}`;
+            // If supplier adds a certificate, send notification to admin and employee
+            notificationMessage = `New certificate added by ${SupplierName}`;
+
+            console.log(
+              `Supplier added a certificate. Sending notification to admin and employee.`
+            );
+            const adminAndEmployeeUsers = await User.find({
+              role: { $in: ["admin", "employee"] },
+            });
+            const notificationData = {
+              message: notificationMessage,
+              type: "certificate",
+            };
+            await Promise.all(
+              adminAndEmployeeUsers.map(async (user) => {
+                console.log(`Notification sent `);
+                const adminAndEmployeeNotification = new Notification({
+                  userId: user._id,
+                  ...notificationData,
+                });
+                await adminAndEmployeeNotification.save();
+              })
+            );
           } else {
           
-            notificationMessage = `A new certificate has been added for supplier ${SupplierName}`;
+            notificationMessage = `You have a new certificate: ${CertificateName}`;
+
+            console.log(
+              `Admin or employee added a certificate. Sending notification to supplier: ${supplier.groupName}`
+            );
+            console.log(`supplier id: ${supplier._id}`);
+            const supplierNotification = new Notification({
+              userId: supplier._id,
+              message: notificationMessage,
+              type: "certificate",
+            });
+            await supplierNotification.save();
           }
-  
+
           const newCertificate = new Certificate({
             SupplierName,
             supplierId: supplier._id,
@@ -63,18 +94,23 @@ const certificateController = {
             CertificateName,
             CertificateFile: certificateFile,
           });
-  
+     
           const savedCertificate = await newCertificate.save();
-  
-       
-          const supplierNotification = new Notification({
-            userId: supplier._id,
-            message: notificationMessage,
-            type: 'certificate',
-          });
-          await supplierNotification.save();
-  
-        
+
+          if (userRole === "admin" || userRole === "employee") {
+            userRole = userRole; // Use the role of the user who added the certificate
+          } else {
+            userRole = "supplier"; // Default to "supplier" if neither admin nor employee
+          }
+
+          const notificationData = {
+            userRole: userRole,
+            supplierId: savedCertificate.supplierId,
+          };
+          console.log("notif data", notificationData);
+          const io = getIo();
+
+          io.emit("newCertificate", notificationData);
           res.status(201).json(savedCertificate);
         } catch (error) {
           console.error("Error adding certificate:", error);

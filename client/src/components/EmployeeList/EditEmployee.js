@@ -14,13 +14,14 @@ import {
   Input
 } from "reactstrap";
 
-function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInList }) {
+const EditEmployee=({ isOpen, toggle, employee, employeeId, updateEmployeeInList }) =>{
   const [showSuccess, setShowSuccess] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editedFormData, setEditedFormData] = useState({
     firstName: "", 
     lastName: "", 
-    position: "" 
+    position: "" ,
+    phone: "",
   });
 
   
@@ -29,7 +30,8 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
       setEditedFormData({
         firstName: employee.firstName || "",
         lastName: employee.lastName || "",
-        position: employee.position || "" 
+        position: employee.position || "" ,
+        phone: employee.phone || "" ,
       });
     }
   }, [employee]);
@@ -57,15 +59,16 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
         }
       );
   
-      const updatedEmployee = response.data;
-      updateEmployeeInList(updatedEmployee);
-      toggle();
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    } catch (error) {
-      console.error("Error saving changes:", error);
-    }
-  };
+      const updatedEmployee = response.data.employee; // Extracting employee data
+    console.log("Updated employee data:", updatedEmployee);
+    updateEmployeeInList(updatedEmployee);
+    toggle();
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  } catch (error) {
+    console.error("Error saving changes:", error);
+  }
+};
   
   if (!employee) return null;
   return (
@@ -109,6 +112,17 @@ function EditEmployee({ isOpen, toggle, employee, employeeId, updateEmployeeInLi
                 type="text"
                 name="position"
                 value={editedFormData.position || ""}
+                onChange={handleInputChange}
+              />
+            </FormGroup>
+          </Col>
+          <Col md="6">
+            <FormGroup>
+              <Label for="Phone">Phone</Label>
+              <Input
+                type="text"
+                name="phone"
+                value={editedFormData.phone || ""}
                 onChange={handleInputChange}
               />
             </FormGroup>

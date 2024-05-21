@@ -4,6 +4,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { IconButton, MenuItem, Menu } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 const Notification = ({
   user,
   isOpen,
@@ -19,11 +22,14 @@ const Notification = ({
     return storedReadNotifications;
   });
   const navigate = useNavigate();
+  const [deleteMenuAnchorEl, setDeleteMenuAnchorEl] = useState(null);
+  const [deleteMenuNotificationId, setDeleteMenuNotificationId] =
+    useState(null);
 
   useEffect(() => {
     const handleNewProtocol = ({ supplierName, protocolTitle }) => {
-      console.log("New protocol received:", protocolTitle);
-    
+     // console.log("New protocol received:", protocolTitle);
+
       if (user.role === "admin" || user.role === "employee") {
         setUnreadNotifications((prevCount) => prevCount + 1);
       }
@@ -38,28 +44,25 @@ const Notification = ({
 
   useEffect(() => {
     const handleNewProtocolStatus = (notificationMessage) => {
-      console.log("New protocol status received:", notificationMessage);
-   
+      //console.log("New protocol status received:", notificationMessage);
+
       if (user.role === "supplier") {
         setUnreadNotifications((prevCount) => prevCount + 1);
       }
     };
-  
+
     socket.on("newProtocolStatus", handleNewProtocolStatus);
-  
+
     return () => {
       socket.off("newProtocolStatus", handleNewProtocolStatus);
     };
   }, [socket, user, setUnreadNotifications]);
-  
-  
-  
+
   useEffect(() => {
     const handleNewEvaluation = () => {
-      console.log("New evaluation received ");
-    
+      //console.log("New evaluation received ");
+
       if (user.role === "supplier") {
-        console.log("Incrementing unread notifications");
         setUnreadNotifications((prevCount) => prevCount + 1);
       }
     };
@@ -73,16 +76,14 @@ const Notification = ({
 
   useEffect(() => {
     const handleNewCertificate = (notificationData) => {
-      console.log("New certificate received");
+      //console.log("New certificate received");
       const userRole = notificationData.userRole;
       const supplierId = notificationData.supplierId;
-      console.log("user role from notif", userRole);
-      console.log("Supplier ID:", supplierId);
-      console.log("Current User ID:", user.id);
+    
 
       if (userRole === "admin" || userRole === "employee") {
         if (supplierId === user.id) {
-          console.log("Incrementing unread notifications");
+         // console.log("Incrementing unread notifications");
           setUnreadNotifications((prevCount) => prevCount + 1);
         }
       } else if (userRole === "supplier" && userRole !== user.role) {
@@ -98,7 +99,7 @@ const Notification = ({
   }, [socket, user, setUnreadNotifications]);
 
   useEffect(() => {
-    console.log("Notifications:", notifications);
+    //console.log("Notifications:", notifications);
   }, [notifications]);
 
   useEffect(() => {
@@ -152,69 +153,84 @@ const Notification = ({
     }
 
     const updatedReadNotifications = [...readNotifications];
-    updatedReadNotifications[index] = true; 
+    updatedReadNotifications[index] = true;
     setReadNotifications(updatedReadNotifications);
-    closeSidebar();
   };
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("token");
+    
+      await axios.delete(
+        `http://localhost:8000/api/notifications/${notificationId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setNotifications(
+        notifications.filter(
+          (notification) => notification._id !== notificationId
+        )
+      );
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+    setDeleteMenuAnchorEl(null);
+    setDeleteMenuNotificationId(null);
+  };
+
   return (
     <>
       {isOpen && (
         <div
+          className="notification-overlay"
+          onClick={closeSidebar}
           style={{
             position: "fixed",
             top: 0,
             left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 998,
           }}
-          onClick={closeSidebar}
         />
       )}
       <div
         className={`notification-sidebar ${isOpen ? "open" : ""}`}
         style={{
-          position: "fixed",
-          top: 0,
-          right: isOpen ? 0 : "-320px",
-          width: "320px",
-          height: "100%",
-          backgroundColor: "#B0C4DE",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
-          transition: "right 0.3s ease",
+          position: "absolute",
+          top: "60px",
+          right: "80px",
           zIndex: 999,
+          backgroundColor: "white",
+          color: "black",
+          borderRadius: "10px",
+          display: isOpen ? "block" : "none",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div
+        <h4
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px",
-            backgroundColor: "white",
-            color: "white",
-            margin: 0,
+            color: "black",
+            marginLeft: "10px",
+            marginTop: "10px",
           }}
         >
-          <h1>Notifications</h1>
-          <i
-            className="fa fa-times-circle"
-            aria-hidden="true"
-            style={{
-              border: "none",
-              background: "none",
-              color: "DarkBlue",
-              cursor: "pointer",
-              fontSize: "1.2rem",
-            }}
-            onClick={closeSidebar}
-          ></i>
-        </div>
-
-        <div style={{ height: "calc(100% - 160px)", overflowY: "auto" }}>
-          <ListGroup style={{ padding: "10px", backgroundColor: "#B0C4DE" }}>
-            {notifications.reverse().map((notification, index) => (
+          Notifications
+        </h4>
+        <div
+          className="notification-list"
+          style={{
+            maxHeight: "600px",
+            width: "490px",
+            overflowY: "auto",
+            borderRadius: "10px",
+          }}
+        >
+          <ListGroup>
+            {notifications.map((notification, index) => (
               <ListGroupItem
                 key={notification._id}
                 onClick={() =>
@@ -225,10 +241,11 @@ const Notification = ({
                   )
                 }
                 style={{
+                  backgroundColor: "white",
                   cursor: "pointer",
                   borderRadius: "30px",
                   marginBottom: "10px",
-                  backgroundColor: "transparent",
+
                   color: "black",
                   transition: "background-color 0.3s",
                 }}
@@ -240,13 +257,41 @@ const Notification = ({
                   e.target.style.backgroundColor = "transparent";
                 }}
               >
+                
                 {notification.message}
                 <br />
-                <span style={{ marginLeft: "10px", fontSize: "0.8rem", color: "#0000CD" }}>
-                  <span style={{ fontSize: "0.8rem" }}>
-                    {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true }).replace('about ', '')}
-                  </span>
+                <span style={{ fontSize: "0.8em", color: "#555" }}>
+                  {formatDistanceToNow(new Date(notification.timestamp), {
+                    addSuffix: true,
+                  }).replace("about ", "")}
                 </span>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation(); // Add this line to stop click event propagation
+                    setDeleteMenuAnchorEl(event.currentTarget);
+                    setDeleteMenuNotificationId(notification._id); // Set the notification ID
+                  }}
+                  sx={{ position: "absolute", right: 0, top: 0 }} // Update positioning
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={deleteMenuAnchorEl}
+                  open={Boolean(
+                    deleteMenuAnchorEl &&
+                      deleteMenuNotificationId === notification._id
+                  )}
+                  onClose={() => {
+                    setDeleteMenuAnchorEl(null);
+                    setDeleteMenuNotificationId(null);
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => handleDeleteNotification(notification._id)}
+                  >
+                    <DeleteIcon sx={{ mr: 0.5 }} fontSize="small" /> Delete Notification
+                  </MenuItem>
+                </Menu>
               </ListGroupItem>
             ))}
           </ListGroup>

@@ -80,6 +80,11 @@ const Suppliers = () => {
         supplier._id === updatedSupplier._id ? updatedSupplier : supplier
       )
     );
+    setFilteredSuppliers((prevSuppliers) =>
+      prevSuppliers.map((supplier) =>
+        supplier._id === updatedSupplier._id ? updatedSupplier : supplier
+      )
+    );
   };
 
   const toggleDeleteConfirmation = () => setDeleteConfirmationOpen(!deleteConfirmationOpen);
@@ -138,13 +143,13 @@ const Suppliers = () => {
             <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
                 <tr>
-                  <th scope="col">Logo</th>
-                  <th scope="col">Group Name</th>
-                  <th scope="col">Address</th>
-                  <th scope="col">Code TVA</th>
-                  <th scope="col">Code DUNS</th>
-                  <th scope="col">Details</th>
-                  <th scope="col"></th>
+                <th scope="col" style={{ fontWeight: "bold" }}>Logo</th>
+    <th scope="col" style={{ fontWeight: "bold" }}>Group Name</th>
+    <th scope="col" style={{ fontWeight: "bold" }}>Address</th>
+    <th scope="col" style={{ fontWeight: "bold" }}>Code TVA</th>
+    <th scope="col" style={{ fontWeight: "bold" }}>Code DUNS</th>
+    <th scope="col" style={{ fontWeight: "bold" }}>Details</th>
+    <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -159,7 +164,7 @@ const Suppliers = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={`http://localhost:8000/${supplier.image}`}
+                          src={supplier.image}
                           alt={`${supplier.groupName} `}
                           style={{ width: "50px", height: "50px" }}
                         />
